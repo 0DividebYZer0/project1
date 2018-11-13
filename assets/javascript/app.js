@@ -1,4 +1,7 @@
 $(document).ready(function(){
+    var database = firebase.database();
+    var gameStats = database.ref("/stats");
+
     $('.modal').modal({
         dismissible: false,
         onCloseEnd: function(){timer.run()}
