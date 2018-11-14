@@ -1,7 +1,6 @@
 var database = firebase.database();
 var locationsRef = database.ref("/locations");
 
-
 $(document).on("click", ".formSubmit", submitForm);
 
 function submitForm(event){
