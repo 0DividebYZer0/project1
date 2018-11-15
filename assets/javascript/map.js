@@ -45,8 +45,8 @@ var origin = {};
 
   // clues from location array renders into html 
   for(j =0; j< origin.clues.length; j++){
-   var clue = '#clue-' + j
-    $(clue).html(origin.clues[j]);
+    var clue = '#clue-' + j
+    $(clue).text(origin.clues[j]);
   }
 
   // map functionality which renders map 
