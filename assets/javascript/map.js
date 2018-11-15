@@ -1,6 +1,15 @@
 
 //win variable
 var win = 0; 
+var database = firebase.database();
+var locations = database.ref("/locations");
+
+var locationObject=[]
+
+// locations.on("child_added", function(loc){
+//   locationObject.push(loc.val());
+//   //console.log(locationObject);
+// });
 
 //MapPoint constructor used by the initMap function
 function MapPoint(lat, lng, id, site, clues){
@@ -13,50 +22,47 @@ function MapPoint(lat, lng, id, site, clues){
 
 
 function initMap() {
-var location =[
-    new MapPoint(40.808884,-73.961224, 'ChIJyQ3Tlj72wokRUCflR_kzeVc','Columbia University School',
-      ['Is Located 116th St & Broadway', 'Was Established in 1754', 'It\'s Mascot is a Lion'])
+  locations.on("child_added", function(loc){
+    locationObject.push(loc.val());
 
-    // new MapPoint(40.756686,-73.973078, 'ChIJTzi6VfxYwokRDtjrgLbTvH4', 'Waldorf Astoria', 
-    //   ['Is located at 301 Park Ave','Marilyn Monroe Moved in 1955','Has 6 Beehives on its Roof']),
-    
-    // new MapPoint(48.852968, 2.349902, 'ChIJATr1n-Fx5kcRjQb6q6cdQDY', 'Cathedral Notre Dame De Paris', 
-    //   ['Is Located on Île de la Cité','Was Built Around 1710', 'Features 39 Gargoyles']),
-    
-    // new MapPoint(-33.863666,151.211458, 'ChIJ_1pC8mmuEmsRrvud0Ftcoyg', 'Museum Of Sydney', 
-    //   ['Is 845 Meters from the Sydney Opera House','Located on Bridge St','Was Once Australias First Government House']),
-    
-    // new MapPoint(51.50074202015363,-0.12462615966796875, 'ChIJ2dGMjMMEdkgRqVqkuXQkj7c', 'Big Ben', 
-    // ['Was Designed by Augustus Pugin','Is Close to Westminster Bridge','Weighs 13.7 Tonnes'])
+  
+  var origin = {};
+    for(var i = 0; i<locationObject.length; i++){
+        origin.lat = Number(locationObject[i].lat);
+        origin.lng = Number(locationObject[i].lng);
+        origin.id = locationObject[i].id; 
+        origin.site = locationObject[i].site;
+        origin.clues = locationObject[i].clues;
+    }
+  
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 14,
+      center: origin,
+    });
+    var clickHandler = new ClickEventHandler(map, origin);
+    var id = clickHandler.origin.id;
 
-  ]     
-
-//origin object which is fed by location array
-var origin = {};
-
-//GAME FLOW MOCK UP
-  for(var i = 0; i<location.length; i++){
-      origin.lat = location[i].lat;
-      origin.lng = location[i].lng;
-      origin.id = location[i].id; 
-      origin.site = location[i].site;
-      origin.clues = location[i].clues;
-  }
-
-  // clues from location array renders into html 
-  for(j =0; j< origin.clues.length; j++){
-   var clue = '#clue-' + j
-    $(clue).html(origin.clues[j]);
-  }
-
-  // map functionality which renders map 
-  var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 14,
-    center: origin,
   });
-  var clickHandler = new ClickEventHandler(map, origin);
-  var id = clickHandler.origin.id;
-}// end of initMap function
+  
+// var location =[
+//     new MapPoint( 43.72296315907589, 10.396585464477539, 'ChIJzYhOxKaR1RIRA_xU1bGp7DI','Leaning Tower Of Pisa',
+//       ['286 Meters from Piazza Del Duomo', 'Took 2 Centuries to Built', 'Is 183.27 Feet Height']),
+
+//     new MapPoint(40.756686,-73.973078, 'ChIJTzi6VfxYwokRDtjrgLbTvH4', 'Waldorf Astoria', 
+//       ['Is located at 301 Park Ave','Marilyn Monroe Moved in 1955','Has 6 Beehives on its Roof']),
+    
+//     new MapPoint(48.852968, 2.349902, 'ChIJATr1n-Fx5kcRjQb6q6cdQDY', 'Cathedral Notre Dame De Paris', 
+//       ['Is Located on Île de la Cité','Was Built Around 1710', 'Features 39 Gargoyles']),
+    
+//     new MapPoint(-33.863666,151.211458, 'ChIJ_1pC8mmuEmsRrvud0Ftcoyg', 'Museum Of Sydney', 
+//       ['Is 845 Meters from the Sydney Opera House','Located on Bridge St','Was Once Australias First Government House']),
+    
+//     new MapPoint(51.50074202015363,-0.12462615966796875, 'ChIJ2dGMjMMEdkgRqVqkuXQkj7c', 'Big Ben', 
+//     ['Was Designed by Architect	Augustus Pugin','Is Close to Westminster Bridge','Weighs 13.7 Tonnes'])
+
+//   ]  
+
+}
 
 
 /**
