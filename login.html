@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title> Project 1 Sign in</title>
+
+
+  <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css"/>
+  <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css"/>
+  <link href="https://fonts.googleapis.com/css?family=Abril+Fatface" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+  <script>
+  // Initialize Firebase
+  var config = {
+      apiKey: "AIzaSyCxTPAKnAatzQ-DfkLSP1s6XlW6zuRFMeo",
+      authDomain: "project1-16a41.firebaseapp.com",
+      databaseURL: "https://project1-16a41.firebaseio.com",
+      projectId: "project1-16a41",
+      storageBucket: "project1-16a41.appspot.com",
+      messagingSenderId: "825653443847"
+  };
+
+
+   firebase.initializeApp(config);
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <script src="assets/javascript/form.js"></script>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.1.1/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.1.1/firebaseui.css" />
+
+
+  <script type="text/javascript">
+    // FirebaseUI config.
+    var uiConfig = {
+      signInSuccessUrl: 'dbAdd.html', 
+      signInOptions: [
+        // Leave the lines as is for the providers you want to offer your users.
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        firebase.auth.GithubAuthProvider.PROVIDER_ID,
+      ],
+    };
+    // Initialize the FirebaseUI Widget using Firebase.
+    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+    // The start method will wait until the DOM is loaded.
+    ui.start('#firebaseui-auth-container', uiConfig);
+
+    
+  </script>
+
+</head>
+<body>
+    <header id="headerSingIn">
+        <h1>Welcome</h1>
+    </header>
+    <div class=containerWidget>
+      <div id="signIn">
+        <div id="firebaseui-auth-container"></div>
+    </div>  
+  </div>
+  
+</body>
+</html>

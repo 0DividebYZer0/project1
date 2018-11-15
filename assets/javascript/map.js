@@ -92,4 +92,21 @@ ClickEventHandler.prototype.handleClick = function(event){
     event.stop();
   }
 
+<<<<<<< HEAD
+      };
+
+
+
+      
+   
+    // </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAGBxD7ehhnDQY_7b7l30Spt5l4F8EQf4&libraries=places&callback=initMap" 
+    async defer></script>
+
+
+//   </body>
+// </html>
+     
+=======
 };
+>>>>>>> master
