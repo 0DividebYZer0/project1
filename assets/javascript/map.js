@@ -91,5 +91,4 @@ ClickEventHandler.prototype.handleClick = function(event){
     // Calling e.stop() on the event prevents the default info window from
     event.stop();
   }
-
 };

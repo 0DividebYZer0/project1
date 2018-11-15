@@ -1,5 +1,24 @@
 var roundNumber = 1;
 $(document).ready(function () {
+    var database = firebase.database();
+    var gameStats = database.ref("/stats");
+
+    // var stats = {
+    //     wins:14,
+    //     losses:10,
+    //     best:30
+    // }
+    
+
+
+
+    gameStats.on("value", function(childSnapshot) {
+        // Store everything into a variable.
+        $("#win").text(childSnapshot.val().wins);
+        $("#losses").text(childSnapshot.val().losses);
+        $("#best").text(childSnapshot.val().best);
+
+    });
     $('#modal1').modal({
         dismissible: false,
         onCloseEnd: function () { timer.run() }
@@ -28,8 +47,11 @@ var timer = {
         if (timer.startNumber < 60000) {
             $("#timerNum").removeClass("light-green-text text-accent-4").addClass("orange-text");
         }
-        else if(timer.startNumber < 59000){
+        if(timer.startNumber < 31000){
             $("#timerNum").removeClass("orange-text").addClass("red-text");
+        }       
+        if(timer.startNumber < 11000){
+            $("#timerNum").addClass("flashit");
         }
 
         if (timer.startNumber === 0) {
@@ -47,6 +69,7 @@ var timer = {
 
 
 function modalNextRound() {
+    $("#timerNum").removeClass("flashit").addClass("light-green-text text-accent-4");
     roundNumber++;
     $("#roundNumber").text(roundNumber);
     timer.startNumber = 120000;
