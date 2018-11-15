@@ -107,16 +107,10 @@ ClickEventHandler.prototype.handleClick = function(event){
          //user picked the worng location and is given a distance clue
           var distance = google.maps.geometry.spherical.computeDistanceBetween(event.latLng, target);
           distance= Math.round(distance);
-          $('#distance').html('You are ' + distance + ' Meters Away');
+          $('#distance').text('You are ' + distance + ' Meters Away');
          
     }
     // Calling e.stop() on the event prevents the default info window from
     event.stop();
-<<<<<<< HEAD
-  }//end of event.placeId
-
-};// end of handleClick function
-=======
   }
 };
->>>>>>> 44eac428a1423cdeb94a78afaa37762448f03db9

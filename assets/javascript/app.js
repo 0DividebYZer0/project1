@@ -28,8 +28,9 @@ $(document).ready(function () {
     // });
     $('#modal1').modal('open');
     $("#timerNum").text(moment(timer.startNumber).format('m:ss'));
-    
+
     $("#roundNumber").text(roundNumber);
+    $("#timerNum").addClass("light-green-text text-accent-4");
 });
 
 var timer = {
@@ -40,12 +41,22 @@ var timer = {
         this.intervalId = setInterval(this.decrement, 1000);
     },
     decrement: function () {
-        timer.startNumber-= 1000;
+        timer.startNumber -= 1000;
         var formattedTime = moment(timer.startNumber).format('m:ss');
         $("#timerNum").text(formattedTime);
+        if (timer.startNumber < 60000) {
+            $("#timerNum").removeClass("light-green-text text-accent-4").addClass("orange-text");
+        }
+        if(timer.startNumber < 31000){
+            $("#timerNum").removeClass("orange-text").addClass("red-text");
+        }       
+        if(timer.startNumber < 11000){
+            $("#timerNum").addClass("flashit");
+        }
+
         if (timer.startNumber === 0) {
             timer.stop();
-            if(roundNumber<5){
+            if (roundNumber < 5) {
                 //do something here after timer hits zero
                 modalNextRound();
             }
@@ -56,7 +67,9 @@ var timer = {
     }
 };
 
-function modalNextRound(){
+
+function modalNextRound() {
+    $("#timerNum").removeClass("flashit").addClass("light-green-text text-accent-4");
     roundNumber++;
     $("#roundNumber").text(roundNumber);
     timer.startNumber = 120000;
