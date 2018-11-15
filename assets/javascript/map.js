@@ -31,7 +31,7 @@
 //     <div id="map"></div>
 //     <br>
 //     <div>NEXT</div>
-    
+    //test
 //     <script>
 
       function MapPoint(lat, lng, id, site){
