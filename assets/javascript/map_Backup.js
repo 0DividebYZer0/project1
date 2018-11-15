@@ -77,7 +77,8 @@ ClickEventHandler.prototype.handleClick = function(event){
         content: '<div align ="center">  Good Job!' + '<br>' + 'The Treasure Was Hidden In the' + '<br>' + this.origin.site  +'</div>'
       });
       infowindow.open(map, marker);
-     
+      $('#liveClue').html('You Got It!!!');
+
       // Where should this be defined? capture in db
       win++; 
       $('#win').html(win);
@@ -85,28 +86,11 @@ ClickEventHandler.prototype.handleClick = function(event){
     else{
           var distance = google.maps.geometry.spherical.computeDistanceBetween(event.latLng, target);
           distance= Math.round(distance);
-          $('#distance').html('You are ' + distance + ' Meters Away');
-         
+          $('#liveClue').html('You Are ' + distance + ' Meters Away');
+          console.log(event.latLng);
     }
     // Calling e.stop() on the event prevents the default info window from
     event.stop();
   }
 
-<<<<<<< HEAD
-      };
-
-
-
-      
-   
-    // </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAGBxD7ehhnDQY_7b7l30Spt5l4F8EQf4&libraries=places&callback=initMap" 
-    async defer></script>
-
-
-//   </body>
-// </html>
-     
-=======
 };
->>>>>>> master
