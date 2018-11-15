@@ -85,7 +85,7 @@ ClickEventHandler.prototype.handleClick = function(event){
     else{
           var distance = google.maps.geometry.spherical.computeDistanceBetween(event.latLng, target);
           distance= Math.round(distance);
-          $('#distance').html('You are ' + distance + ' Meters Away');
+          $('#distance').text('You are ' + distance + ' Meters Away');
          
     }
     // Calling e.stop() on the event prevents the default info window from
