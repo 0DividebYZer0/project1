@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Project 1</title>
+    <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+    <script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyCxTPAKnAatzQ-DfkLSP1s6XlW6zuRFMeo",
+        authDomain: "project1-16a41.firebaseapp.com",
+        databaseURL: "https://project1-16a41.firebaseio.com",
+        projectId: "project1-16a41",
+        storageBucket: "project1-16a41.appspot.com",
+        messagingSenderId: "825653443847"
+    };
+    firebase.initializeApp(config);
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <script src="assets/javascript/form.js"></script>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.1.1/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.1.1/firebaseui.css" />
+</head>
+
+<body>
+
+    <form>
+        <div class="form-group">
+            <label for="lat">Lattitude:</label>
+            <input type="number" step="0.000001" class="form-control" id="lat" required>
+        </div>
+        <div class="form-group">
+            <label for="lng">Longitude:</label>
+            <input type="number" step="0.000001" class="form-control" id="lng" required>
+        </div>
+        <div class="form-group">
+            <label for="id">Google ID:</label>
+            <input type="text" class="form-control" id="id" required>
+        </div>
+        <div class="form-group">
+            <label for="site">Site:</label>
+            <input type="text" class="form-control" id="site" required>
+        </div>
+        <div class="form-group">
+            <label for="clues">Clue #1:</label>
+            <input type="text" class="form-control" id="clue1" required>
+        </div>
+        <div class="form-group">
+            <label for="clues">Clue #2:</label>
+            <input type="text" class="form-control" id="clue2" required>
+        </div>
+        <div class="form-group">
+            <label for="clues">Clue #3:</label>
+            <input type="text" class="form-control" id="clue3" required>
+        </div>
+
+        <button type="submit" class="btn btn-default formSubmit">Submit</button>
+    </form>
+</body>
+
+</html>
