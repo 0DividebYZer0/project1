@@ -1,6 +1,15 @@
 
 //Where should this be defined? capture in db
 var win = 0; 
+var database = firebase.database();
+var locations = database.ref("/locations");
+
+// var location=[]
+
+// locations.on("child_added", function(loc){
+//       location.push(loc.val())
+//       //console.log(locObject)
+// })
 
 function MapPoint(lat, lng, id, site, clues){
   this.lat = lat
@@ -92,7 +101,6 @@ ClickEventHandler.prototype.handleClick = function(event){
     event.stop();
   }
 
-<<<<<<< HEAD
       };
 
 
@@ -107,6 +115,3 @@ ClickEventHandler.prototype.handleClick = function(event){
 //   </body>
 // </html>
      
-=======
-};
->>>>>>> master
