@@ -1,5 +1,5 @@
 
-//Where should this be defined? capture in db
+//win variable
 var win = 0; 
 var database = firebase.database();
 var locations = database.ref("/locations");
@@ -11,6 +11,7 @@ var locationObject=[]
 //   //console.log(locationObject);
 // });
 
+//MapPoint constructor used by the initMap function
 function MapPoint(lat, lng, id, site, clues){
   this.lat = lat
   this.lng = lng
@@ -18,6 +19,7 @@ function MapPoint(lat, lng, id, site, clues){
   this.site = site
   this.clues = clues
 }
+
 
 function initMap() {
   locations.on("child_added", function(loc){
@@ -74,14 +76,18 @@ var ClickEventHandler = function(map, origin) {
   this.infowindow = new google.maps.InfoWindow;
   // Listen for clicks on the map.
   this.map.addListener('click', this.handleClick.bind(this));
-};
+};//end of ClickEventHandler
 
-
+//on click map function
 ClickEventHandler.prototype.handleClick = function(event){
   if (event.placeId) {
     var target = new google.maps.LatLng(this.origin.lat, this.origin.lng);
-
+    // verifies that user clicks on the correct location
     if(event.placeId === this.origin.id){
+
+      //STOP CLOCK HERE
+
+      // marker functionality  *** ADD TO STOP FUNCTION ***
       var marker = new google.maps.Marker({
         position: target,
         map: this.map,
@@ -89,19 +95,25 @@ ClickEventHandler.prototype.handleClick = function(event){
         animation: google.maps.Animation.DROP
       });
 
+      //info window contents *** CHANGE MESSAGE & ADD TO STOP FUNCTION ***
       var infowindow = new google.maps.InfoWindow({
-        content: '<div align ="center">  Good Job!' + '<br>' + 'The Treasure Was Hidden In the' + '<br>' + this.origin.site  +'</div>'
+        content: '<div align ="center">  Good Job!' + '<br>' + 'The Treasure Was Hidden In The' + '<br>' + this.origin.site  +'</div>'
       });
+      //info window opens *** ADD TO STOP FUNCTION ***
       infowindow.open(map, marker);
-     
-      // Where should this be defined? capture in db
+
+      //update main clue
+      $('#distance').html(this.origin.site);
+
+      //win is update after user finds location
       win++; 
+      //win is updated in html
       $('#win').html(win);
-    }
-    else{
+    } else{
+         //user picked the worng location and is given a distance clue
           var distance = google.maps.geometry.spherical.computeDistanceBetween(event.latLng, target);
           distance= Math.round(distance);
-          $('#distance').html('You are ' + distance + ' Meters Away');
+          $('#distance').text('You are ' + distance + ' Meters Away');
          
     }
     // Calling e.stop() on the event prevents the default info window from
