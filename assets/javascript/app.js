@@ -1,27 +1,36 @@
 var roundNumber = 1;
-$(document).ready(function () {
-    var database = firebase.database();
-    var gameStats = database.ref("/stats");
 
-    // var stats = {
-    //     wins:14,
-    //     losses:10,
-    //     best:30
-    // }
+var remainingLocations = [];
+
+var database = firebase.database();
+
+var locations = database.ref("/locations");
+
+locations.on("child_added", function(snap) {
+    remainingLocations.push(snap.val());
+});
+
+$(document).ready(function () {
+    
+    var gameStats = database.ref("/stats");
     
 
+    // on load and on child_added, store contents of locations(Firebase) in an array variable
+    // this represents the set of locations remaining
 
 
+    //might get rid of gameStats; individual user's wins/losses don't need to be stored in Firebase.
     gameStats.on("value", function(childSnapshot) {
         // Store everything into a variable.
         $("#win").text(childSnapshot.val().wins);
         $("#losses").text(childSnapshot.val().losses);
         $("#best").text(childSnapshot.val().best);
-
     });
+
+
     $('#modal1').modal({
         dismissible: false,
-        onCloseEnd: function () { timer.run() }
+        onCloseEnd: function () { startRound() }
     });
     // $('#modal2').modal({
     //     dismissible: false,
@@ -33,8 +42,10 @@ $(document).ready(function () {
     $("#timerNum").addClass("light-green-text text-accent-4");
 });
 
+
+
 var timer = {
-    startNumber: 120000,
+    startNumber: 5000,
     intervalId: '',
     run: function () {
         clearInterval(this.intervalId);
@@ -68,12 +79,44 @@ var timer = {
 };
 
 
+function startRound() {
+
+    console.log("startRound begins");
+    if (remainingLocations.length === 0) {
+        //end of game scenario
+        console.log("no more locations");
+    }
+    else {
+        var randLIndex = Math.floor(Math.random() * remainingLocations.length);
+
+        // currentLocation will be passed to whatever function sets up the map: initMap
+        var currentLocation = remainingLocations[randLIndex];
+
+        remainingLocations.splice(randLIndex, 1);
+
+        timer.run();
+
+        console.log("initMap called by startRound")
+        initMap(currentLocation);
+    }
+};
+
+
+function displayAnswer() {
+
+};
+
+
+// might not use modals for transitions between rounds
 function modalNextRound() {
+    // timer/round handling
     $("#timerNum").removeClass("flashit").addClass("light-green-text text-accent-4");
     roundNumber++;
     $("#roundNumber").text(roundNumber);
-    timer.startNumber = 120000;
+    timer.startNumber = 5000;
     $("#timerNum").text(moment(timer.startNumber).format('m:ss'));
+
+    // modal construction
     var roundCompleted = $('<p>');
     var instructions = $('<p>');
     roundCompleted.text('Round Completed');
@@ -84,3 +127,5 @@ function modalNextRound() {
     $('#modal-btn').text('Next Round');
     $('#modal1').modal('open');
 };
+
+
