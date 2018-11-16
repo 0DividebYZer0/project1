@@ -124,7 +124,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <!--added geometry library to link-ML-->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAGBxD7ehhnDQY_7b7l30Spt5l4F8EQf4&libraries=places&callback=initMap&libraries=geometry"
+
+    <!--took this out of URL so that initMap doesn't get called on document load: &callback=initMap -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAGBxD7ehhnDQY_7b7l30Spt5l4F8EQf4&libraries=places&libraries=geometry"
         async defer></script>
 
 </body>
