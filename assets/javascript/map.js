@@ -33,7 +33,6 @@ function initMap() {
         origin.site = locationObject[i].site;
         origin.clues = locationObject[i].clues;
     }
-  
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 14,
       center: origin,
@@ -41,7 +40,12 @@ function initMap() {
     var clickHandler = new ClickEventHandler(map, origin);
     var id = clickHandler.origin.id;
 
+    for(var i = 0; i < origin.clues.length; i++){
+      var clue = "#clue-"+i;
+      $(clue).text(origin.clues[i]);
+    }
   });
+  
   
 // var location =[
 //     new MapPoint( 43.72296315907589, 10.396585464477539, 'ChIJzYhOxKaR1RIRA_xU1bGp7DI','Leaning Tower Of Pisa',
