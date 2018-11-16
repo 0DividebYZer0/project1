@@ -1,48 +1,56 @@
 
-//win variable
+//win variable; probably move this to app.js
 var win = 0; 
-var database = firebase.database();
-var locations = database.ref("/locations");
-
-var locationObject=[]
-
-// locations.on("child_added", function(loc){
-//   locationObject.push(loc.val());
-//   //console.log(locationObject);
-// });
-
-//MapPoint constructor used by the initMap function
-function MapPoint(lat, lng, id, site, clues){
-  this.lat = lat
-  this.lng = lng
-  this.id = id
-  this.site = site
-  this.clues = clues
-}
 
 
-function initMap() {
-  locations.on("child_added", function(loc){
-    locationObject.push(loc.val());
+
+
+
+
+
+//MapPoint constructor used by the initMap function; don't need this anymore
+// function MapPoint(lat, lng, id, site, clues){
+//   this.lat = lat
+//   this.lng = lng
+//   this.id = id
+//   this.site = site
+//   this.clues = clues
+// }
+
+
+// does initMap get called?
+function initMap(locationInput) {
+  // locations.on("child_added", function(loc){
+  //   locationObject.push(loc.val());
 
   
   var origin = {};
-    for(var i = 0; i<locationObject.length; i++){
-        origin.lat = Number(locationObject[i].lat);
-        origin.lng = Number(locationObject[i].lng);
-        origin.id = locationObject[i].id; 
-        origin.site = locationObject[i].site;
-        origin.clues = locationObject[i].clues;
-    }
+
+    //don't use a for loop, but apply the origin property assignments to locationInput properties
+      // for(var i = 0; i<locationObject.length; i++){
+      //     origin.lat = Number(locationObject[i].lat);
+      //     origin.lng = Number(locationObject[i].lng);
+      //     origin.id = locationObject[i].id; 
+      //     origin.site = locationObject[i].site;
+      //     origin.clues = locationObject[i].clues;
+      // }
   
+    origin.lat = Number(locationInput.lat);
+    origin.lng = Number(locationInput.lng);
+    origin.id = locationInput.id; 
+    origin.site = locationInput.site;
+    origin.clues = locationInput.clues;
+
+
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 14,
+      // need to add some random offset from origin for center; otherwise, the map view is centered at the origin
       center: origin,
     });
     var clickHandler = new ClickEventHandler(map, origin);
     var id = clickHandler.origin.id;
 
-  });
+  // });
   
 // var location =[
 //     new MapPoint( 43.72296315907589, 10.396585464477539, 'ChIJzYhOxKaR1RIRA_xU1bGp7DI','Leaning Tower Of Pisa',
