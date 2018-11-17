@@ -18,7 +18,7 @@ var win = 0;
 // }
 
 
-// does initMap get called?
+
 function initMap(locationInput) {
   // locations.on("child_added", function(loc){
   //   locationObject.push(loc.val());
@@ -41,6 +41,10 @@ function initMap(locationInput) {
     origin.site = locationInput.site;
     origin.clues = locationInput.clues;
 
+    //display clues on page
+    for (var i = 0; i < origin.clues.length; i++) {
+      $("#clue-" + i).text(origin.clues[i]);
+    };
 
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 14,
@@ -88,43 +92,67 @@ var ClickEventHandler = function(map, origin) {
 
 //on click map function
 ClickEventHandler.prototype.handleClick = function(event){
-  if (event.placeId) {
-    var target = new google.maps.LatLng(this.origin.lat, this.origin.lng);
-    // verifies that user clicks on the correct location
-    if(event.placeId === this.origin.id){
 
-      //STOP CLOCK HERE
+  if (acceptClick) {
+    if (event.placeId) {
+      var target = new google.maps.LatLng(this.origin.lat, this.origin.lng);
+      // verifies that user clicks on the correct location
+      if(event.placeId === this.origin.id){
 
-      // marker functionality  *** ADD TO STOP FUNCTION ***
-      var marker = new google.maps.Marker({
-        position: target,
-        map: this.map,
-        title: this.site,
-        animation: google.maps.Animation.DROP
-      });
+        //STOP CLOCK HERE
+        timer.stop()
+        acceptClick = false;
 
-      //info window contents *** CHANGE MESSAGE & ADD TO STOP FUNCTION ***
-      var infowindow = new google.maps.InfoWindow({
-        content: '<div align ="center">  Good Job!' + '<br>' + 'The Treasure Was Hidden In The' + '<br>' + this.origin.site  +'</div>'
-      });
-      //info window opens *** ADD TO STOP FUNCTION ***
-      infowindow.open(map, marker);
+        // marker functionality  *** ADD TO STOP FUNCTION ***
+        // moved to displayAnswer function
+          var marker = new google.maps.Marker({
+            position: target,
+            map: this.map,
+            title: this.site,
+            animation: google.maps.Animation.DROP
+          });
 
-      //update main clue
-      $('#distance').html(this.origin.site);
+        //info window contents *** CHANGE MESSAGE & ADD TO STOP FUNCTION ***
+        var infowindow = new google.maps.InfoWindow({
+          content: '<div align ="center">  Good Job!' + '<br>' + 'The Treasure Was Hidden In The' + '<br>' + this.origin.site  +'</div>'
+        });
+        //info window opens *** ADD TO STOP FUNCTION ***
+        infowindow.open(map, marker);
 
-      //win is update after user finds location
-      win++; 
-      //win is updated in html
-      $('#win').html(win);
-    } else{
-         //user picked the worng location and is given a distance clue
-          var distance = google.maps.geometry.spherical.computeDistanceBetween(event.latLng, target);
-          distance= Math.round(distance);
-          $('#distance').text('You are ' + distance + ' Meters Away');
-         
+        //update main clue
+        $('#distance').html(this.origin.site);
+
+        //win is update after user finds location
+        win++; 
+        //win is updated in html
+        $('#win').html(win);
+
+        setTimeout(startRound, 5000);
+      } else{
+          //user picked the worng location and is given a distance clue
+            var distance = google.maps.geometry.spherical.computeDistanceBetween(event.latLng, target);
+            distance= Math.round(distance);
+            $('#distance').text('You are ' + distance + ' Meters Away');
+          
+      }
+      // Calling e.stop() on the event prevents the default info window from
+      event.stop();
     }
-    // Calling e.stop() on the event prevents the default info window from
-    event.stop();
-  }
+  };
 };
+
+// function displayAnswer() {
+    
+
+//   //drop marker
+//   var marker = new google.maps.Marker({
+//     position: target,
+//     map: ClickEventHandler.map,
+//     title: ClickEventHandler.site,
+//     animation: google.maps.Animation.DROP
+//   });
+
+
+
+//   setTimeout(startRound, 5000)
+// };
