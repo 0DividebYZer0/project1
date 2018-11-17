@@ -33,10 +33,28 @@ firebase.auth().onAuthStateChanged(function(user) {
 
         gameStats.on("value", function(childSnapshot) {
             // put all values for the user on the table
+            if (childSnapshot.val().wins){
             $("#win").text(childSnapshot.val().wins);
+            }
+            else{
+                $("#win").text(0);
+            }
+            if (childSnapshot.val().losses){
+
             $("#losses").text(childSnapshot.val().losses);
-            $("#best").text(childSnapshot.val().best);
+            }
+            else{
+                $("#losses").text(0);
+            }
+            if (childSnapshot.val().best){
+
+                $("#best").text(childSnapshot.val().best);
+            }
+            else{
+                $("#best").text(0);
+            }
         });
+
     } 
     else {
       // User is signed out. So, all user dependent variables are reset below:
@@ -104,6 +122,7 @@ var timer = {
             acceptClick = false;
             //display some message to indicate that time's up, and show answer
             $("#distance").html("Time's up!<br>The treasure remains hidden!");
+            losses()
 
             //start next round
             setTimeout(startRound, 5000);
@@ -215,5 +234,14 @@ function losses(){
   
     });
   
+  }
+  function resetStats(){
+    var userId = firebase.auth().currentUser.uid;
+
+    database.ref('/stats/' + userId).set({
+        wins:0,
+        losses:0,
+        best:0
+    })
   }
 
