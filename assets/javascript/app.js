@@ -210,6 +210,7 @@ function startRound() {
 
 
 $(document).on("click", "#signOut", signOut);
+$(document).on("click", "#resetStats", resetStats);
 
 function signOut() {
     event.preventDefault();
