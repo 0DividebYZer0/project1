@@ -60,20 +60,38 @@
     </div> -->
 
     <div class="container">
+        <ul id="dropdown1" class="dropdown-content">
+            <li><a href="#!">Restart Game</a></li>
+            <li class="divider"></li>
+            <li><a href="#!">Reset Stats</a></li>
+            <li class="divider"></li>
+            <li><a id="signOut" href="#!">Sign Out</a></li>
+        </ul>
         <nav>
             <div id="nav" class="nav-wrapper light-blue darken-2">
                 <a href="#" class="brand-logo center white-text">Treasure Hunt</a>
-                <!-- <a href="#" class="btn btn-info btn-lg" id="signOut">
-                     Log out
-                  </a> -->
-                <a id="userDisplayName" href="#"></a>
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                <!-- <a id="userDisplayName" class="flow-text" href="#"></a> -->
 
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
-                    <li><a id="signOut" href="#">Sign Out</a></li>
+                    <li><a class="dropdown-trigger" href="#!" data-target="dropdown1"><strong><span id="userDisplayName"></span></strong><i class="material-icons right">arrow_drop_down</i></a></li>
                 </ul>
 
             </div>
         </nav>
+        <ul class="sidenav" id="mobile-demo">
+            <li><a  id="restartGame" href="#!">Restart Game</a></li>
+            <li class="divider"></li>
+            <li><a id="resetStats" href="#!">Reset Stats</a></li>
+            <li class="divider"></li>
+            <li><a id="signOut" href="#!">Sign Out</a></li>
+        </ul>
+        <!-- <div class="row">
+            <div class="col s12 m12 l12">
+                <span id="userDisplayName" class="flow-text"></span>
+                 <strong><span id="userDisplayName"></span></strong>
+            </div>
+        </div> -->
         <div class="row">
             <div class="col s7 m6 l6">
                 <h4 class="flow-text">Time Remaining: <span id="timerNum"></span></h4>
@@ -88,12 +106,12 @@
         </div>
         <div class="row">
             <div class="col s12 m4 l4">
-                 <!-- ASSOCIATED TO FLOW-->
+                <!-- ASSOCIATED TO FLOW-->
                 <ul class="collection with-header z-depth-2">
                     <li class="collection-header">
                         <h6><strong>Clues</strong></h6>
                     </li>
-                    <li class="collection-item" id ='gif'>Clue 1: it is somewhere on the map</li>
+                    <li class="collection-item" id='gif'>Clue 1: it is somewhere on the map</li>
                     <li id="clue-0" class="collection-item">Clue 1: it is somewhere on the map</li>
                     <li id="clue-1" class="collection-item">Clue 2: it is somewhere on the map</li>
                     <li id="clue-2" class="collection-item">Clue 3: it is somewhere on the map</li>
