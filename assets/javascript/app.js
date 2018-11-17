@@ -223,16 +223,16 @@ function losses(){
   
     //read the stats for this user once and then update the wins
     database.ref('/stats/' + userId).once('value').then(function(snapshot) {
-      losses=snapshot.val().losses
-      if (losses){
-        losses++
-      }
-      else{
-        losses=1
-      }
-      database.ref('/stats/' + userId).update({losses:losses})
-  
-    });
+        if(snapshot.val()==null || snapshot.val().losses==null || snapshot.val().losses==undefined){
+            losses++
+          }
+          else{
+            losses=snapshot.val().losses
+            losses++
+          }
+          database.ref('/stats/' + userId).update({losses:losses})
+      
+        });
   
   }
   function resetStats(){
