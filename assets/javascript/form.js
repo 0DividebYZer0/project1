@@ -12,7 +12,7 @@ function submitForm(event){
         id:$("#id").val(),
         site:$("#site").val(),
         clues:[$("#clue1").val()],
-        pictureClue:[$("#pic-clue").val()]
+        pictureClue:$("#pic-clue").val()
 
     };
     location.clues.push($("#clue2").val())
