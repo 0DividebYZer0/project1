@@ -19,5 +19,8 @@
 	100% { opacity: 1; }
 }
 
-
-
+#image{
+    width: 220px;
+    text-align: center;
+}
+    
