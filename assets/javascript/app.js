@@ -1,10 +1,12 @@
-var roundNumber = 1;
+var roundNumber = 0;
 
 var remainingLocations = [];
 
 var database = firebase.database();
 
 var locations = database.ref("/locations");
+
+var acceptClick = false;
 
 locations.on("child_added", function(snap) {
     remainingLocations.push(snap.val());
@@ -45,9 +47,11 @@ $(document).ready(function () {
 
 
 var timer = {
-    startNumber: 5000,
+    startNumber: 120000,
     intervalId: '',
     run: function () {
+
+
         clearInterval(this.intervalId);
         this.intervalId = setInterval(this.decrement, 1000);
     },
@@ -66,11 +70,18 @@ var timer = {
         }
 
         if (timer.startNumber === 0) {
+            //loss scenario
             timer.stop();
-            if (roundNumber < 5) {
-                //do something here after timer hits zero
-                modalNextRound();
-            }
+            acceptClick = false;
+            //display some message to indicate that time's up, and show answer
+            $("#distance").html("Time's up!<br>The treasure remains hidden!");
+
+            //start next round
+            setTimeout(startRound, 5000);
+            // if (roundNumber < 5) {
+            //     //do something here after timer hits zero
+            //     modalNextRound();
+            // }
         }
     },
     stop: function () {
@@ -81,10 +92,13 @@ var timer = {
 
 function startRound() {
 
+    $("#distance").text("");
+
     console.log("startRound begins");
     if (remainingLocations.length === 0) {
         //end of game scenario
         console.log("no more locations");
+        $("#distance").text("Thanks for playing!");
     }
     else {
         var randLIndex = Math.floor(Math.random() * remainingLocations.length);
@@ -94,38 +108,46 @@ function startRound() {
 
         remainingLocations.splice(randLIndex, 1);
 
+        //roundNumber
+        roundNumber++;
+        $("#roundNumber").text(roundNumber);
+
+        $("#timerNum").removeClass("flashit red-text orange-text").addClass("light-green-text text-accent-4");
+
+        timer.startNumber = 120000;
+        $("#timerNum").text(moment(timer.startNumber).format('m:ss'))
         timer.run();
 
         console.log("initMap called by startRound")
+
         initMap(currentLocation);
+        acceptClick = true;
     }
 };
 
 
-function displayAnswer() {
-
-};
 
 
-// might not use modals for transitions between rounds
-function modalNextRound() {
-    // timer/round handling
-    $("#timerNum").removeClass("flashit").addClass("light-green-text text-accent-4");
-    roundNumber++;
-    $("#roundNumber").text(roundNumber);
-    timer.startNumber = 5000;
-    $("#timerNum").text(moment(timer.startNumber).format('m:ss'));
 
-    // modal construction
-    var roundCompleted = $('<p>');
-    var instructions = $('<p>');
-    roundCompleted.text('Round Completed');
-    instructions.text('Click Next Round when you are ready to begin the next round.');
-    $('.modal-content').empty();
-    $('.modal-content').append(roundCompleted);
-    $('.modal-content').append(instructions);
-    $('#modal-btn').text('Next Round');
-    $('#modal1').modal('open');
-};
+// // might not use modals for transitions between rounds
+// function modalNextRound() {
+//     // timer/round handling
+//     $("#timerNum").removeClass("flashit").addClass("light-green-text text-accent-4");
+//     roundNumber++;
+//     $("#roundNumber").text(roundNumber);
+//     timer.startNumber = 5000;
+//     $("#timerNum").text(moment(timer.startNumber).format('m:ss'));
+
+//     // modal construction
+//     var roundCompleted = $('<p>');
+//     var instructions = $('<p>');
+//     roundCompleted.text('Round Completed');
+//     instructions.text('Click Next Round when you are ready to begin the next round.');
+//     $('.modal-content').empty();
+//     $('.modal-content').append(roundCompleted);
+//     $('.modal-content').append(instructions);
+//     $('#modal-btn').text('Next Round');
+//     $('#modal1').modal('open');
+// };
 
 
