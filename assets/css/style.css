@@ -42,3 +42,6 @@ html, body, .my-wrapper {
   ul.dropdown-content li a {
     color: #000; /* no need for !important :) */
 }
+.collectionRemoveMargin{
+    margin-top: 0% !important;
+}
