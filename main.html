@@ -6,16 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
     <script>
-    // Initialize Firebase
-    var config = {
-        apiKey: "AIzaSyCxTPAKnAatzQ-DfkLSP1s6XlW6zuRFMeo",
-        authDomain: "project1-16a41.firebaseapp.com",
-        databaseURL: "https://project1-16a41.firebaseio.com",
-        projectId: "project1-16a41",
-        storageBucket: "project1-16a41.appspot.com",
-        messagingSenderId: "825653443847"
-    };
-    firebase.initializeApp(config);
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCxTPAKnAatzQ-DfkLSP1s6XlW6zuRFMeo",
+            authDomain: "project1-16a41.firebaseapp.com",
+            databaseURL: "https://project1-16a41.firebaseio.com",
+            projectId: "project1-16a41",
+            storageBucket: "project1-16a41.appspot.com",
+            messagingSenderId: "825653443847"
+        };
+        firebase.initializeApp(config);
     </script>
     <title>Treasure Hunt</title>
     <link rel="stylesheet" type="text/css" media="screen" href="./assets/css/style.css" />
@@ -63,34 +63,39 @@
         <nav>
             <div id="nav" class="nav-wrapper light-blue darken-2">
                 <a href="#" class="brand-logo center white-text">Treasure Hunt</a>
-                <a href="#"><span class="glyphicon glyphicon-user" id="userDisplayName"></span></a>
-                <a href="#" class="btn btn-info btn-lg" id="signOut">
+                <!-- <a href="#" class="btn btn-info btn-lg" id="signOut">
                     <span class="glyphicon glyphicon-log-out" ></span> Log out
-                  </a>
+                  </a> -->
+                <a id="userDisplayName" href="#"></a>
+
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a id="signOut" href="#">Sign Out</a></li>
+                </ul>
+
             </div>
         </nav>
         <div class="row">
-            <div class="col s6 m6 l6">
+            <div class="col s7 m6 l6">
                 <h4 class="flow-text">Time Remaining: <span id="timerNum"></span></h4>
             </div>
-            <div class="col s6 m6 l6">
+            <div class="col s5 m6 l6">
                 <h4 class="right-align flow-text"><span id="distance"></span></h4>
             </div>
         </div>
         <div class="row">
-            <div class="col s4 m4 l4">
+            <div class="col s12 m4 l4">
                 <span><strong>Round <span id="roundNumber"></span>/5</strong></span> <!-- ASSOCIATED TO FLOW-->
                 <ul class="collection with-header z-depth-2">
                     <li class="collection-header">
                         <h6><strong>Clues</strong></h6>
                     </li>
-                    <!-- <li class="collection-item">Clue 1: it is somewhere on the map</li> -->
+                    <li class="collection-item" id ='gif'>Clue 1: it is somewhere on the map</li>
                     <li id="clue-0" class="collection-item">Clue 1: it is somewhere on the map</li>
                     <li id="clue-1" class="collection-item">Clue 2: it is somewhere on the map</li>
                     <li id="clue-2" class="collection-item">Clue 3: it is somewhere on the map</li>
                 </ul>
             </div>
-            <div class="col s8 m8 l8 map-height">
+            <div class="col s12 m8 l8 map-height">
                 <div id="map" class="z-depth-2"></div>
             </div>
         </div>

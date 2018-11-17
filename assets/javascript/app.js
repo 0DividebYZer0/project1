@@ -29,7 +29,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         uid = user.uid;
     //   var providerData = user.providerData;
 
-        $("#userDisplayName").text(displayName.split(" ", 1));
+        $("#userDisplayName").text("Welcome: " +displayName.split(" ", 1));
         gameStats = database.ref("/stats/"+uid);
         userLoggedIn=true
 
