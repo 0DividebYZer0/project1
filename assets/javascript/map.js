@@ -1,21 +1,32 @@
+var database = firebase.database();
+var gameStats={};
+var displayName="";
+var uid="";
+var userLoggedIn=false
 
-//win variable; probably move this to app.js
-var win = 0; 
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    // User is signed in.
+      displayName = user.displayName;
 
+      uid = user.uid;
+      gameStats = database.ref("/stats/"+uid);
+      userLoggedIn=true
 
+  } 
+  else {
+    // User is signed out. So, all user dependent variables are reset below:
+    gameStats={};
+    displayName="";
+    uid="";   
+    userLoggedIn=false
 
+    $("#win").text(0);
+    $("#losses").text(0);
+    $("#best").text(0);
 
-
-
-
-//MapPoint constructor used by the initMap function; don't need this anymore
-// function MapPoint(lat, lng, id, site, clues){
-//   this.lat = lat
-//   this.lng = lng
-//   this.id = id
-//   this.site = site
-//   this.clues = clues
-// }
+  }
+});
 
 
 
@@ -53,27 +64,6 @@ function initMap(locationInput) {
     });
     var clickHandler = new ClickEventHandler(map, origin);
     var id = clickHandler.origin.id;
-
-  // });
-  
-// var location =[
-//     new MapPoint( 43.72296315907589, 10.396585464477539, 'ChIJzYhOxKaR1RIRA_xU1bGp7DI','Leaning Tower Of Pisa',
-//       ['286 Meters from Piazza Del Duomo', 'Took 2 Centuries to Built', 'Is 183.27 Feet Height']),
-
-//     new MapPoint(40.756686,-73.973078, 'ChIJTzi6VfxYwokRDtjrgLbTvH4', 'Waldorf Astoria', 
-//       ['Is located at 301 Park Ave','Marilyn Monroe Moved in 1955','Has 6 Beehives on its Roof']),
-    
-//     new MapPoint(48.852968, 2.349902, 'ChIJATr1n-Fx5kcRjQb6q6cdQDY', 'Cathedral Notre Dame De Paris', 
-//       ['Is Located on Île de la Cité','Was Built Around 1710', 'Features 39 Gargoyles']),
-    
-//     new MapPoint(-33.863666,151.211458, 'ChIJ_1pC8mmuEmsRrvud0Ftcoyg', 'Museum Of Sydney', 
-//       ['Is 845 Meters from the Sydney Opera House','Located on Bridge St','Was Once Australias First Government House']),
-    
-//     new MapPoint(51.50074202015363,-0.12462615966796875, 'ChIJ2dGMjMMEdkgRqVqkuXQkj7c', 'Big Ben', 
-//     ['Was Designed by Architect	Augustus Pugin','Is Close to Westminster Bridge','Weighs 13.7 Tonnes'])
-
-//   ]  
-
 }
 
 
@@ -123,9 +113,9 @@ ClickEventHandler.prototype.handleClick = function(event){
         $('#distance').html(this.origin.site);
 
         //win is update after user finds location
-        win++; 
+        updateWins() 
         //win is updated in html
-        $('#win').html(win);
+        //$('#win').html(win);
 
         setTimeout(startRound, 5000);
       } else{
@@ -140,6 +130,31 @@ ClickEventHandler.prototype.handleClick = function(event){
     }
   };
 };
+
+
+
+//console.log(firebase.auth().currentUser.uid)
+
+
+function updateWins(){
+  //first i get the id
+  var userId = firebase.auth().currentUser.uid;
+  var wins=0;
+
+  //read the stats for this user once and then update the wins
+  database.ref('/stats/' + userId).once('value').then(function(snapshot) {
+    wins=snapshot.val().wins
+    if (wins){
+      wins++
+    }
+    else{
+      wins=1
+    }
+    database.ref('/stats/' + userId).update({wins:wins})
+
+  });
+
+}
 
 // function displayAnswer() {
     
@@ -156,3 +171,4 @@ ClickEventHandler.prototype.handleClick = function(event){
 
 //   setTimeout(startRound, 5000)
 // };
+

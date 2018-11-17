@@ -5,6 +5,10 @@ var remainingLocations = [];
 var database = firebase.database();
 
 var locations = database.ref("/locations");
+var gameStats={};
+var displayName="";
+var uid="";
+var userLoggedIn=false
 
 var acceptClick = false;
 
@@ -12,24 +16,49 @@ locations.on("child_added", function(snap) {
     remainingLocations.push(snap.val());
 });
 
+//to manage user authentication:
+firebase.auth().onAuthStateChanged(function(user) {
+
+    if (user) {
+      // User is signed in.
+        displayName = user.displayName;
+    //   var email = user.email;
+    //   var emailVerified = user.emailVerified;
+    //   var photoURL = user.photoURL;
+    //   var isAnonymous = user.isAnonymous;
+        uid = user.uid;
+    //   var providerData = user.providerData;
+        gameStats = database.ref("/stats/"+uid);
+        userLoggedIn=true
+
+        gameStats.on("value", function(childSnapshot) {
+            // put all values for the user on the table
+            $("#win").text(childSnapshot.val().wins);
+            $("#losses").text(childSnapshot.val().losses);
+            $("#best").text(childSnapshot.val().best);
+        });
+    } 
+    else {
+      // User is signed out. So, all user dependent variables are reset below:
+      gameStats={};
+      displayName="";
+      uid="";   
+      userLoggedIn=false
+
+      $("#win").text(0);
+      $("#losses").text(0);
+      $("#best").text(0);
+ 
+    }
+});
+
 $(document).ready(function () {
     
-    var gameStats = database.ref("/stats");
-    
-
     // on load and on child_added, store contents of locations(Firebase) in an array variable
     // this represents the set of locations remaining
 
 
     //might get rid of gameStats; individual user's wins/losses don't need to be stored in Firebase.
-    gameStats.on("value", function(childSnapshot) {
-        // Store everything into a variable.
-        $("#win").text(childSnapshot.val().wins);
-        $("#losses").text(childSnapshot.val().losses);
-        $("#best").text(childSnapshot.val().best);
-    });
-
-
     $('#modal1').modal({
         dismissible: false,
         onCloseEnd: function () { startRound() }
@@ -150,4 +179,41 @@ function startRound() {
 //     $('#modal1').modal('open');
 // };
 
+
+
+$(document).on("click", "#signOut", signOut);
+
+function signOut(){
+    event.preventDefault();
+    console.log("sign out pressed");
+
+
+    firebase.auth().signOut().then(function() {
+        window.location.replace("index.html");
+        // Sign-out successful.
+        console.log("sign out");
+      }).catch(function(error) {
+        console.log(error.code);
+    });
+};
+
+function losses(){
+    //first i get the id
+    var userId = firebase.auth().currentUser.uid;
+    var losses=0;
+  
+    //read the stats for this user once and then update the wins
+    database.ref('/stats/' + userId).once('value').then(function(snapshot) {
+      losses=snapshot.val().losses
+      if (losses){
+        losses++
+      }
+      else{
+        losses=1
+      }
+      database.ref('/stats/' + userId).update({losses:losses})
+  
+    });
+  
+  }
 
