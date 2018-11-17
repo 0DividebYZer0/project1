@@ -23,4 +23,6 @@
     width: 220px;
     text-align: center;
 }
-    
+.vertical-align{
+    vertical-align: baseline;
+}    
