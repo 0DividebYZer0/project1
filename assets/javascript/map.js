@@ -1,24 +1,35 @@
+var database = firebase.database();
+var gameStats={};
+var displayName="";
+var uid="";
+var userLoggedIn=false
 
-//win variable; probably move this to app.js
-var win = 0; 
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    // User is signed in.
+      displayName = user.displayName;
+
+      uid = user.uid;
+      gameStats = database.ref("/stats/"+uid);
+      userLoggedIn=true
+
+  } 
+  else {
+    // User is signed out. So, all user dependent variables are reset below:
+    gameStats={};
+    displayName="";
+    uid="";   
+    userLoggedIn=false
+
+    $("#win").text(0);
+    $("#losses").text(0);
+    $("#best").text(0);
+
+  }
+});
 
 
 
-
-
-
-
-//MapPoint constructor used by the initMap function; don't need this anymore
-// function MapPoint(lat, lng, id, site, clues){
-//   this.lat = lat
-//   this.lng = lng
-//   this.id = id
-//   this.site = site
-//   this.clues = clues
-// }
-
-
-// does initMap get called?
 function initMap(locationInput) {
   // locations.on("child_added", function(loc){
   //   locationObject.push(loc.val());
@@ -41,6 +52,10 @@ function initMap(locationInput) {
     origin.site = locationInput.site;
     origin.clues = locationInput.clues;
 
+    //display clues on page
+    for (var i = 0; i < origin.clues.length; i++) {
+      $("#clue-" + i).text(origin.clues[i]);
+    };
 
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 14,
@@ -49,32 +64,6 @@ function initMap(locationInput) {
     });
     var clickHandler = new ClickEventHandler(map, origin);
     var id = clickHandler.origin.id;
-
-    for(var i = 0; i < origin.clues.length; i++){
-      var clue = "#clue-"+i;
-      $(clue).text(origin.clues[i]);
-    }
- 
-  
-  
-// var location =[
-//     new MapPoint( 43.72296315907589, 10.396585464477539, 'ChIJzYhOxKaR1RIRA_xU1bGp7DI','Leaning Tower Of Pisa',
-//       ['286 Meters from Piazza Del Duomo', 'Took 2 Centuries to Built', 'Is 183.27 Feet Height']),
-
-//     new MapPoint(40.756686,-73.973078, 'ChIJTzi6VfxYwokRDtjrgLbTvH4', 'Waldorf Astoria', 
-//       ['Is located at 301 Park Ave','Marilyn Monroe Moved in 1955','Has 6 Beehives on its Roof']),
-    
-//     new MapPoint(48.852968, 2.349902, 'ChIJATr1n-Fx5kcRjQb6q6cdQDY', 'Cathedral Notre Dame De Paris', 
-//       ['Is Located on Île de la Cité','Was Built Around 1710', 'Features 39 Gargoyles']),
-    
-//     new MapPoint(-33.863666,151.211458, 'ChIJ_1pC8mmuEmsRrvud0Ftcoyg', 'Museum Of Sydney', 
-//       ['Is 845 Meters from the Sydney Opera House','Located on Bridge St','Was Once Australias First Government House']),
-    
-//     new MapPoint(51.50074202015363,-0.12462615966796875, 'ChIJ2dGMjMMEdkgRqVqkuXQkj7c', 'Big Ben', 
-//     ['Was Designed by Architect	Augustus Pugin','Is Close to Westminster Bridge','Weighs 13.7 Tonnes'])
-
-//   ]  
-
 }
 
 
@@ -93,43 +82,93 @@ var ClickEventHandler = function(map, origin) {
 
 //on click map function
 ClickEventHandler.prototype.handleClick = function(event){
-  if (event.placeId) {
-    var target = new google.maps.LatLng(this.origin.lat, this.origin.lng);
-    // verifies that user clicks on the correct location
-    if(event.placeId === this.origin.id){
 
-      //STOP CLOCK HERE
+  if (acceptClick) {
+    if (event.placeId) {
+      var target = new google.maps.LatLng(this.origin.lat, this.origin.lng);
+      // verifies that user clicks on the correct location
+      if(event.placeId === this.origin.id){
 
-      // marker functionality  *** ADD TO STOP FUNCTION ***
-      var marker = new google.maps.Marker({
-        position: target,
-        map: this.map,
-        title: this.site,
-        animation: google.maps.Animation.DROP
-      });
+        //STOP CLOCK HERE
+        timer.stop()
+        acceptClick = false;
 
-      //info window contents *** CHANGE MESSAGE & ADD TO STOP FUNCTION ***
-      var infowindow = new google.maps.InfoWindow({
-        content: '<div align ="center">  Good Job!' + '<br>' + 'The Treasure Was Hidden In The' + '<br>' + this.origin.site  +'</div>'
-      });
-      //info window opens *** ADD TO STOP FUNCTION ***
-      infowindow.open(map, marker);
+        // marker functionality  *** ADD TO STOP FUNCTION ***
+        // moved to displayAnswer function
+          var marker = new google.maps.Marker({
+            position: target,
+            map: this.map,
+            title: this.site,
+            animation: google.maps.Animation.DROP
+          });
 
-      //update main clue
-      $('#distance').html(this.origin.site);
+        //info window contents *** CHANGE MESSAGE & ADD TO STOP FUNCTION ***
+        var infowindow = new google.maps.InfoWindow({
+          content: '<div align ="center">  Good Job!' + '<br>' + 'The Treasure Was Hidden In The' + '<br>' + this.origin.site  +'</div>'
+        });
+        //info window opens *** ADD TO STOP FUNCTION ***
+        infowindow.open(map, marker);
 
-      //win is update after user finds location
-      win++; 
-      //win is updated in html
-      $('#win').html(win);
-    } else{
-         //user picked the worng location and is given a distance clue
-          var distance = google.maps.geometry.spherical.computeDistanceBetween(event.latLng, target);
-          distance= Math.round(distance);
-          $('#distance').text('You are ' + distance + ' Meters Away');
-         
+        //update main clue
+        $('#distance').html(this.origin.site);
+
+        //win is update after user finds location
+        updateWins() 
+        //win is updated in html
+        //$('#win').html(win);
+
+        setTimeout(startRound, 5000);
+      } else{
+          //user picked the worng location and is given a distance clue
+            var distance = google.maps.geometry.spherical.computeDistanceBetween(event.latLng, target);
+            distance= Math.round(distance);
+            $('#distance').text('You are ' + distance + ' Meters Away');
+          
+      }
+      // Calling e.stop() on the event prevents the default info window from
+      event.stop();
     }
-    // Calling e.stop() on the event prevents the default info window from
-    event.stop();
-  }
+  };
 };
+
+
+
+//console.log(firebase.auth().currentUser.uid)
+
+
+function updateWins(){
+  //first i get the id
+  var userId = firebase.auth().currentUser.uid;
+  var wins=0;
+
+  //read the stats for this user once and then update the wins
+  database.ref('/stats/' + userId).once('value').then(function(snapshot) {
+    wins=snapshot.val().wins
+    if (wins){
+      wins++
+    }
+    else{
+      wins=1
+    }
+    database.ref('/stats/' + userId).update({wins:wins})
+
+  });
+
+}
+
+// function displayAnswer() {
+    
+
+//   //drop marker
+//   var marker = new google.maps.Marker({
+//     position: target,
+//     map: ClickEventHandler.map,
+//     title: ClickEventHandler.site,
+//     animation: google.maps.Animation.DROP
+//   });
+
+
+
+//   setTimeout(startRound, 5000)
+// };
+

@@ -1,33 +1,64 @@
-var roundNumber = 1;
+var roundNumber = 0;
 
 var remainingLocations = [];
 
 var database = firebase.database();
 
 var locations = database.ref("/locations");
+var gameStats={};
+var displayName="";
+var uid="";
+var userLoggedIn=false
+
+var acceptClick = false;
 
 locations.on("child_added", function(snap) {
     remainingLocations.push(snap.val());
 });
 
+//to manage user authentication:
+firebase.auth().onAuthStateChanged(function(user) {
+
+    if (user) {
+      // User is signed in.
+        displayName = user.displayName;
+    //   var email = user.email;
+    //   var emailVerified = user.emailVerified;
+    //   var photoURL = user.photoURL;
+    //   var isAnonymous = user.isAnonymous;
+        uid = user.uid;
+    //   var providerData = user.providerData;
+        gameStats = database.ref("/stats/"+uid);
+        userLoggedIn=true
+
+        gameStats.on("value", function(childSnapshot) {
+            // put all values for the user on the table
+            $("#win").text(childSnapshot.val().wins);
+            $("#losses").text(childSnapshot.val().losses);
+            $("#best").text(childSnapshot.val().best);
+        });
+    } 
+    else {
+      // User is signed out. So, all user dependent variables are reset below:
+      gameStats={};
+      displayName="";
+      uid="";   
+      userLoggedIn=false
+
+      $("#win").text(0);
+      $("#losses").text(0);
+      $("#best").text(0);
+ 
+    }
+});
+
 $(document).ready(function () {
     
-    var gameStats = database.ref("/stats");
-    
-
     // on load and on child_added, store contents of locations(Firebase) in an array variable
     // this represents the set of locations remaining
 
 
     //might get rid of gameStats; individual user's wins/losses don't need to be stored in Firebase.
-    gameStats.on("value", function(childSnapshot) {
-        // Store everything into a variable.
-        $("#win").text(childSnapshot.val().wins);
-        $("#losses").text(childSnapshot.val().losses);
-        $("#best").text(childSnapshot.val().best);
-    });
-
-
     $('#modal1').modal({
         dismissible: false,
         onCloseEnd: function () { startRound() }
@@ -48,6 +79,8 @@ var timer = {
     startNumber: 120000,
     intervalId: '',
     run: function () {
+
+
         clearInterval(this.intervalId);
         this.intervalId = setInterval(this.decrement, 1000);
     },
@@ -66,11 +99,18 @@ var timer = {
         }
 
         if (timer.startNumber === 0) {
+            //loss scenario
             timer.stop();
-            if (roundNumber < 5) {
-                //do something here after timer hits zero
-                modalNextRound();
-            }
+            acceptClick = false;
+            //display some message to indicate that time's up, and show answer
+            $("#distance").html("Time's up!<br>The treasure remains hidden!");
+
+            //start next round
+            setTimeout(startRound, 5000);
+            // if (roundNumber < 5) {
+            //     //do something here after timer hits zero
+            //     modalNextRound();
+            // }
         }
     },
     stop: function () {
@@ -81,10 +121,13 @@ var timer = {
 
 function startRound() {
 
+    $("#distance").text("");
+
     console.log("startRound begins");
     if (remainingLocations.length === 0) {
         //end of game scenario
         console.log("no more locations");
+        $("#distance").text("Thanks for playing!");
     }
     else {
         var randLIndex = Math.floor(Math.random() * remainingLocations.length);
@@ -94,38 +137,83 @@ function startRound() {
 
         remainingLocations.splice(randLIndex, 1);
 
+        //roundNumber
+        roundNumber++;
+        $("#roundNumber").text(roundNumber);
+
+        $("#timerNum").removeClass("flashit red-text orange-text").addClass("light-green-text text-accent-4");
+
+        timer.startNumber = 120000;
+        $("#timerNum").text(moment(timer.startNumber).format('m:ss'))
         timer.run();
 
         console.log("initMap called by startRound")
+
         initMap(currentLocation);
+        acceptClick = true;
     }
 };
 
 
-function displayAnswer() {
 
+
+
+// // might not use modals for transitions between rounds
+// function modalNextRound() {
+//     // timer/round handling
+//     $("#timerNum").removeClass("flashit").addClass("light-green-text text-accent-4");
+//     roundNumber++;
+//     $("#roundNumber").text(roundNumber);
+//     timer.startNumber = 5000;
+//     $("#timerNum").text(moment(timer.startNumber).format('m:ss'));
+
+//     // modal construction
+//     var roundCompleted = $('<p>');
+//     var instructions = $('<p>');
+//     roundCompleted.text('Round Completed');
+//     instructions.text('Click Next Round when you are ready to begin the next round.');
+//     $('.modal-content').empty();
+//     $('.modal-content').append(roundCompleted);
+//     $('.modal-content').append(instructions);
+//     $('#modal-btn').text('Next Round');
+//     $('#modal1').modal('open');
+// };
+
+
+
+$(document).on("click", "#signOut", signOut);
+
+function signOut(){
+    event.preventDefault();
+    console.log("sign out pressed");
+
+
+    firebase.auth().signOut().then(function() {
+        window.location.replace("index.html");
+        // Sign-out successful.
+        console.log("sign out");
+      }).catch(function(error) {
+        console.log(error.code);
+    });
 };
 
-
-// might not use modals for transitions between rounds
-function modalNextRound() {
-    // timer/round handling
-    $("#timerNum").removeClass("flashit").addClass("light-green-text text-accent-4");
-    roundNumber++;
-    $("#roundNumber").text(roundNumber);
-    timer.startNumber = 120000;
-    $("#timerNum").text(moment(timer.startNumber).format('m:ss'));
-
-    // modal construction
-    var roundCompleted = $('<p>');
-    var instructions = $('<p>');
-    roundCompleted.text('Round Completed');
-    instructions.text('Click Next Round when you are ready to begin the next round.');
-    $('.modal-content').empty();
-    $('.modal-content').append(roundCompleted);
-    $('.modal-content').append(instructions);
-    $('#modal-btn').text('Next Round');
-    $('#modal1').modal('open');
-};
-
+function losses(){
+    //first i get the id
+    var userId = firebase.auth().currentUser.uid;
+    var losses=0;
+  
+    //read the stats for this user once and then update the wins
+    database.ref('/stats/' + userId).once('value').then(function(snapshot) {
+      losses=snapshot.val().losses
+      if (losses){
+        losses++
+      }
+      else{
+        losses=1
+      }
+      database.ref('/stats/' + userId).update({losses:losses})
+  
+    });
+  
+  }
 
