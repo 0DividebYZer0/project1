@@ -51,11 +51,28 @@ function initMap(locationInput) {
     origin.id = locationInput.id; 
     origin.site = locationInput.site;
     origin.clues = locationInput.clues;
+    origin.pictureClue = locationInput.pictureClue;
 
     //display clues on page
     for (var i = 0; i < origin.clues.length; i++) {
       $("#clue-" + i).text(origin.clues[i]);
     };
+
+     // image clue
+    var gif =  origin.pictureClue;
+    // console.log(gif)
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + gif + "&api_key=dc6zaTOxFJmzC&limit=9";
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    }).then(function(response) {
+        // var result = response.data[0].images.fixed_height.url; 
+        var result = response.data[0].images.fixed_height_still.url;
+        var image = $("<img>");
+        image.addClass('image').css('width', '250px');
+        image.attr("src", result);
+        $("#gif").html(image);
+      });
 
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 14,
@@ -64,6 +81,8 @@ function initMap(locationInput) {
     });
     var clickHandler = new ClickEventHandler(map, origin);
     var id = clickHandler.origin.id;
+
+    
 }
 
 
@@ -93,8 +112,8 @@ ClickEventHandler.prototype.handleClick = function(event){
         timer.stop()
         acceptClick = false;
 
-        // marker functionality  *** ADD TO STOP FUNCTION ***
-        // moved to displayAnswer function
+       // marker functionality  *** ADD TO STOP FUNCTION ***
+       // moved to displayAnswer function
           var marker = new google.maps.Marker({
             position: target,
             map: this.map,
