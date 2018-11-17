@@ -19,4 +19,12 @@
 	100% { opacity: 1; }
 }
 
+.collection-item {
+    text-align: center;
+}
 
+
+#image{
+    width: 220px;
+}
+    
