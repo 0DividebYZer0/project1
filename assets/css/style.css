@@ -1,7 +1,7 @@
 #map {
       height:100%;
 }
-.map-height{
+ .map-height{
     height: 25em;
 }
 .flashit{
@@ -45,3 +45,4 @@ html, body, .my-wrapper {
 .collectionRemoveMargin{
     margin-top: 0% !important;
 }
+
