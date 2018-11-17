@@ -88,7 +88,7 @@ $(document).ready(function () {
     //might get rid of gameStats; individual user's wins/losses don't need to be stored in Firebase.
     $('#modal1').modal({
         dismissible: false,
-        onCloseEnd: function () { startRound() }
+        onCloseEnd: function () { setTimeout(startRound, 500) }
     });
     // $('#modal2').modal({
     //     dismissible: false,
