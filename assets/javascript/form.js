@@ -11,7 +11,9 @@ function submitForm(event){
         lng:$("#lng").val(), 
         id:$("#id").val(),
         site:$("#site").val(),
-        clues:[$("#clue1").val()]
+        clues:[$("#clue1").val()],
+        pictureClue:[$("#pic-clue").val()]
+
     };
     location.clues.push($("#clue2").val())
     location.clues.push($("#clue3").val())
