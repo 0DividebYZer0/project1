@@ -66,10 +66,10 @@ function initMap(locationInput) {
       url: queryURL,
       method: "GET"
     }).then(function(response) {
-        // var result = response.data[0].images.fixed_height.url; 
         var result = response.data[0].images.fixed_height_still.url;
+        console.log(result);
         var image = $("<img>");
-        image.addClass('image').css('width', '250px');
+        image.addClass('image');
         image.attr("src", result);
         $("#gif").html(image);
       });
