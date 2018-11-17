@@ -39,3 +39,6 @@
 html, body, .my-wrapper {
     height: 100%;
   }
+  ul.dropdown-content li a {
+    color: #000; /* no need for !important :) */
+}
