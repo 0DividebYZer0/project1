@@ -18,11 +18,6 @@
 	50% { opacity: .1; } 
 	100% { opacity: 1; }
 }
-
-.image{
-    width: 220px;
-    text-align: center;
-}
 .vertical-align{
     vertical-align: baseline;
 }

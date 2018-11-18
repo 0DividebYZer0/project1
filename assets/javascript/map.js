@@ -64,7 +64,7 @@ function initMap(locationInput) {
     }).then(function(response) {
         var result = response.data[0].images.fixed_height_still.url;
         var image = $("<img>");
-        image.addClass('image');
+        image.addClass('responsive-img');
         image.attr("src", result);
         $("#gif").html(image);
       });
