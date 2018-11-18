@@ -8,7 +8,6 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     // User is signed in.
       displayName = user.displayName;
-
       uid = user.uid;
       gameStats = database.ref("/stats/"+uid);
       userLoggedIn=true
@@ -28,14 +27,11 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 
-
+var origin = {};
 
 function initMap(locationInput) {
   // locations.on("child_added", function(loc){
   //   locationObject.push(loc.val());
-
-  
-  var origin = {};
 
     //don't use a for loop, but apply the origin property assignments to locationInput properties
       // for(var i = 0; i<locationObject.length; i++){
@@ -45,7 +41,8 @@ function initMap(locationInput) {
       //     origin.site = locationObject[i].site;
       //     origin.clues = locationObject[i].clues;
       // }
-  
+    
+    //origin property assignments to locationInput properties
     origin.lat = Number(locationInput.lat);
     origin.lng = Number(locationInput.lng);
     origin.id = locationInput.id; 
@@ -60,14 +57,12 @@ function initMap(locationInput) {
 
      // image clue
     var gif =  origin.pictureClue;
-    // console.log(gif)
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + gif + "&api_key=dc6zaTOxFJmzC&limit=9";
     $.ajax({
       url: queryURL,
       method: "GET"
     }).then(function(response) {
         var result = response.data[0].images.fixed_height_still.url;
-        console.log(result);
         var image = $("<img>");
         image.addClass('image');
         image.attr("src", result);
@@ -77,12 +72,34 @@ function initMap(locationInput) {
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 14,
       // need to add some random offset from origin for center; otherwise, the map view is centered at the origin
+      // adding random offset implies adding another set of lat anf lng varibles... 
       center: origin,
     });
     var clickHandler = new ClickEventHandler(map, origin);
     var id = clickHandler.origin.id;
 
+      
+}
+
+// marker and infowindow function
+function markerWindow(){
+  var target = new google.maps.LatLng( origin.lat,  origin.lng);
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 14,
+    center: target
+  });
+        var marker = new google.maps.Marker({
+        position: target,
+        map: map,
+        title: origin.site,
+        animation: google.maps.Animation.DROP 
+      });
     
+      var infowindow = new google.maps.InfoWindow({
+      content: '<div align ="center"> The Treasure was Hidden in the' + '<br>' + this.origin.site  +'</div>' 
+      
+       });
+      infowindow.open(map, marker);
 }
 
 
@@ -111,26 +128,7 @@ ClickEventHandler.prototype.handleClick = function(event){
         //STOP CLOCK HERE
         timer.stop()
         acceptClick = false;
-
-       // marker functionality  *** ADD TO STOP FUNCTION ***
-       // moved to displayAnswer function
-          var marker = new google.maps.Marker({
-            position: target,
-            map: this.map,
-            title: this.site,
-            animation: google.maps.Animation.DROP
-          });
-
-        //info window contents *** CHANGE MESSAGE & ADD TO STOP FUNCTION ***
-        var infowindow = new google.maps.InfoWindow({
-          content: '<div align ="center">  Good Job!' + '<br>' + 'The Treasure Was Hidden In The' + '<br>' + this.origin.site  +'</div>'
-        });
-        //info window opens *** ADD TO STOP FUNCTION ***
-        infowindow.open(map, marker);
-
-        //update main clue
-        $('#distance').html(this.origin.site);
-
+    
         //win is update after user finds location
         updateWins() 
         //win is updated in html
@@ -141,8 +139,7 @@ ClickEventHandler.prototype.handleClick = function(event){
           //user picked the worng location and is given a distance clue
             var distance = google.maps.geometry.spherical.computeDistanceBetween(event.latLng, target);
             distance= Math.round(distance);
-            $('#distance').text('You are ' + distance + ' Meters Away');
-          
+            $('#distance').text('You are ' + distance + ' Meters Away');    
       }
       // Calling e.stop() on the event prevents the default info window from
       event.stop();
@@ -154,8 +151,10 @@ ClickEventHandler.prototype.handleClick = function(event){
 
 //console.log(firebase.auth().currentUser.uid)
 
-
 function updateWins(){
+  // Location is revealed 
+  markerWindow();
+  $("#distance").html("Great Job!" + '<br>' + currentLocation.site);
   //first i get the id
   var userId = firebase.auth().currentUser.uid;
   var wins=0;
