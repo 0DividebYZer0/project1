@@ -1,6 +1,6 @@
 var roundNumber = 0;
-
 var remainingLocations = [];
+var currentLocation = [];
 
 var database = firebase.database();
 
@@ -137,11 +137,13 @@ var timer = {
             timer.stop();
             acceptClick = false;
             //display some message to indicate that time's up, and show answer
-            $("#distance").html("Time's up!<br>The treasure remains hidden!");
-            losses()
+            // $("#distance").html("Time's up!<br>The Treasure remains hidden!");
+           
 
+            losses();
             //start next round
             setTimeout(startRound, 5000);
+
             // if (roundNumber < 5) {
             //     //do something here after timer hits zero
             //     modalNextRound();
@@ -158,17 +160,17 @@ function startRound() {
 
     $("#distance").text("");
 
-    console.log("startRound begins");
+    // console.log("startRound begins");
     if (remainingLocations.length === 0) {
         //end of game scenario
-        console.log("no more locations");
+        // console.log("no more locations");
         $("#distance").text("Thanks for playing!");
     }
     else {
         var randLIndex = Math.floor(Math.random() * remainingLocations.length);
 
         // currentLocation will be passed to whatever function sets up the map: initMap
-        var currentLocation = remainingLocations[randLIndex];
+         currentLocation = remainingLocations[randLIndex];
 
         remainingLocations.splice(randLIndex, 1);
 
@@ -182,7 +184,7 @@ function startRound() {
         $("#timerNum").text(moment(timer.startNumber).format('m:ss'))
         timer.run();
 
-        console.log("initMap called by startRound")
+        // console.log("initMap called by startRound")
 
         initMap(currentLocation);
         acceptClick = true;
@@ -236,8 +238,7 @@ function restartGame(){
 function signOut() {
     event.preventDefault();
     console.log("sign out pressed");
-
-
+  
     firebase.auth().signOut().then(function () {
         window.location.replace("index.html");
         // Sign-out successful.
@@ -247,7 +248,10 @@ function signOut() {
     });
 };
 
-function losses() {
+function losses(){
+    // Location is revealed 
+    markerWindow();
+    $("#distance").html("Time is Up!" + '<br>' + currentLocation.site);
     //first i get the id
     var userId = firebase.auth().currentUser.uid;
     var losses = 0;
@@ -276,3 +280,8 @@ function resetStats() {
     })
 }
 
+
+    
+   
+      
+  

@@ -19,7 +19,7 @@
 	100% { opacity: 1; }
 }
 
-#image{
+.image{
     width: 220px;
     text-align: center;
 }
@@ -45,3 +45,4 @@ html, body, .my-wrapper {
 .collectionRemoveMargin{
     margin-top: 0% !important;
 }
+
