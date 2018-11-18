@@ -73,9 +73,11 @@ firebase.auth().onAuthStateChanged(function (user) {
         $("#win").text(0);
         $("#losses").text(0);
         $("#best").text(0);
+        location.replace("index.html")
 
     }
 });
+
 
 $(document).ready(function () {
     $('.sidenav').sidenav();
