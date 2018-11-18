@@ -1,7 +1,7 @@
 #map {
       height:100%;
 }
-.map-height{
+ .map-height{
     height: 25em;
 }
 .flashit{
@@ -17,11 +17,6 @@
 	0% { opacity: 1; } 
 	50% { opacity: .1; } 
 	100% { opacity: 1; }
-}
-
-.image{
-    width: 220px;
-    text-align: center;
 }
 .vertical-align{
     vertical-align: baseline;
@@ -45,4 +40,3 @@ html, body, .my-wrapper {
 .collectionRemoveMargin{
     margin-top: 0% !important;
 }
-
