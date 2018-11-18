@@ -12,9 +12,14 @@ var userLoggedIn = false
 
 var acceptClick = false;
 
-locations.on("child_added", function (snap) {
-    remainingLocations.push(snap.val());
-});
+function resetGame(){
+
+    locations.on("child_added", function (snap) {
+        remainingLocations.push(snap.val());
+    });
+}
+
+resetGame()
 
 //to manage user authentication:
 firebase.auth().onAuthStateChanged(function (user) {
@@ -68,9 +73,11 @@ firebase.auth().onAuthStateChanged(function (user) {
         $("#win").text(0);
         $("#losses").text(0);
         $("#best").text(0);
+        location.replace("index.html")
 
     }
 });
+
 
 $(document).ready(function () {
     $('.sidenav').sidenav();
@@ -210,6 +217,21 @@ function startRound() {
 
 
 $(document).on("click", "#signOut", signOut);
+$(document).on("click", "#resetStats", resetStats);
+$(document).on("click", "#restartGame", restartGame);
+
+function restartGame(){
+    remainingLocations = [];
+    resetGame();
+    timer.stop();
+    timer.startNumber = 120000;
+    roundNumber=1;
+    $("#roundNumber").text(roundNumber);
+    timer.run();
+
+
+}
+
 
 function signOut() {
     event.preventDefault();
