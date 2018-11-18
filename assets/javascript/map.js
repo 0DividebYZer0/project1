@@ -161,12 +161,12 @@ function updateWins(){
 
   //read the stats for this user once and then update the wins
   database.ref('/stats/' + userId).once('value').then(function(snapshot) {
-    wins=snapshot.val().wins
-    if (wins){
+    if(snapshot.val()==null || snapshot.val().wins==null || snapshot.val().wins==undefined){
       wins++
     }
     else{
-      wins=1
+      wins=snapshot.val().wins
+      wins++
     }
     database.ref('/stats/' + userId).update({wins:wins})
 

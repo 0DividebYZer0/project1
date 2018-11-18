@@ -5,73 +5,89 @@ var currentLocation = [];
 var database = firebase.database();
 
 var locations = database.ref("/locations");
-var gameStats={};
-var displayName="";
-var uid="";
-var userLoggedIn=false
+var gameStats = {};
+var displayName = "";
+var uid = "";
+var userLoggedIn = false
 
 var acceptClick = false;
 
-locations.on("child_added", function(snap) {
-    remainingLocations.push(snap.val());
-});
+function resetGame(){
+
+    locations.on("child_added", function (snap) {
+        remainingLocations.push(snap.val());
+    });
+}
+
+resetGame()
 
 //to manage user authentication:
-firebase.auth().onAuthStateChanged(function(user) {
+firebase.auth().onAuthStateChanged(function (user) {
 
     if (user) {
-      // User is signed in.
+        // User is signed in.
         displayName = user.displayName;
-    //   var email = user.email;
-    //   var emailVerified = user.emailVerified;
-    //   var photoURL = user.photoURL;
-    //   var isAnonymous = user.isAnonymous;
+        //   var email = user.email;
+        //   var emailVerified = user.emailVerified;
+        //   var photoURL = user.photoURL;
+        //   var isAnonymous = user.isAnonymous;
         uid = user.uid;
-    //   var providerData = user.providerData;
-        gameStats = database.ref("/stats/"+uid);
-        userLoggedIn=true
+        //   var providerData = user.providerData;
 
-        gameStats.on("value", function(childSnapshot) {
+        $("#userDisplayName").text("Welcome: " + displayName.split(" ", 1));
+        gameStats = database.ref("/stats/" + uid);
+        userLoggedIn = true
+
+        gameStats.on("value", function (childSnapshot) {
             // put all values for the user on the table
-            if (childSnapshot.val().wins){
-            $("#win").text(childSnapshot.val().wins);
+            if (childSnapshot.val().wins) {
+                $("#win").text(childSnapshot.val().wins);
             }
-            else{
+            else {
                 $("#win").text(0);
             }
-            if (childSnapshot.val().losses){
+            if (childSnapshot.val().losses) {
 
-            $("#losses").text(childSnapshot.val().losses);
+                $("#losses").text(childSnapshot.val().losses);
             }
-            else{
+            else {
                 $("#losses").text(0);
             }
-            if (childSnapshot.val().best){
+            if (childSnapshot.val().best) {
 
                 $("#best").text(childSnapshot.val().best);
             }
-            else{
+            else {
                 $("#best").text(0);
             }
         });
 
-    } 
+    }
     else {
-      // User is signed out. So, all user dependent variables are reset below:
-      gameStats={};
-      displayName="";
-      uid="";   
-      userLoggedIn=false
+        // User is signed out. So, all user dependent variables are reset below:
+        gameStats = {};
+        displayName = "";
+        uid = "";
+        userLoggedIn = false
 
-      $("#win").text(0);
-      $("#losses").text(0);
-      $("#best").text(0);
- 
+        $("#win").text(0);
+        $("#losses").text(0);
+        $("#best").text(0);
+        location.replace("index.html")
+
     }
 });
 
+
 $(document).ready(function () {
-    
+    $('.sidenav').sidenav();
+    $(".dropdown-trigger").dropdown(
+        {
+            hover: true,
+            constrainWidth: false,
+            coverTrigger: false,
+            alignment:'right'
+        });
     // on load and on child_added, store contents of locations(Firebase) in an array variable
     // this represents the set of locations remaining
 
@@ -79,7 +95,7 @@ $(document).ready(function () {
     //might get rid of gameStats; individual user's wins/losses don't need to be stored in Firebase.
     $('#modal1').modal({
         dismissible: false,
-        onCloseEnd: function () { startRound() }
+        onCloseEnd: function () { setTimeout(startRound, 500) }
     });
     // $('#modal2').modal({
     //     dismissible: false,
@@ -109,10 +125,10 @@ var timer = {
         if (timer.startNumber < 60000) {
             $("#timerNum").removeClass("light-green-text text-accent-4").addClass("orange-text");
         }
-        if(timer.startNumber < 31000){
+        if (timer.startNumber < 31000) {
             $("#timerNum").removeClass("orange-text").addClass("red-text");
-        }       
-        if(timer.startNumber < 11000){
+        }
+        if (timer.startNumber < 11000) {
             $("#timerNum").addClass("flashit");
         }
 
@@ -203,15 +219,31 @@ function startRound() {
 
 
 $(document).on("click", "#signOut", signOut);
+$(document).on("click", "#resetStats", resetStats);
+$(document).on("click", "#restartGame", restartGame);
 
-function signOut(){
+function restartGame(){
+    remainingLocations = [];
+    resetGame();
+    timer.stop();
+    timer.startNumber = 120000;
+    roundNumber=1;
+    $("#roundNumber").text(roundNumber);
+    timer.run();
+
+
+}
+
+
+function signOut() {
     event.preventDefault();
     console.log("sign out pressed");
-    firebase.auth().signOut().then(function() {
+  
+    firebase.auth().signOut().then(function () {
         window.location.replace("index.html");
         // Sign-out successful.
         console.log("sign out");
-      }).catch(function(error) {
+    }).catch(function (error) {
         console.log(error.code);
     });
 };
@@ -222,31 +254,31 @@ function losses(){
     $("#distance").html("Time is Up!" + '<br>' + currentLocation.site);
     //first i get the id
     var userId = firebase.auth().currentUser.uid;
-    var losses=0;
-  
+    var losses = 0;
+
     //read the stats for this user once and then update the wins
-    database.ref('/stats/' + userId).once('value').then(function(snapshot) {
-      losses=snapshot.val().losses
-      if (losses){
-        losses++
-      }
-      else{
-        losses=1
-      }
-      database.ref('/stats/' + userId).update({losses:losses})
-  
+    database.ref('/stats/' + userId).once('value').then(function (snapshot) {
+        if (snapshot.val() == null || snapshot.val().losses == null || snapshot.val().losses == undefined) {
+            losses++
+        }
+        else {
+            losses = snapshot.val().losses
+            losses++
+        }
+        database.ref('/stats/' + userId).update({ losses: losses })
+
     });
-  
-  }
-  function resetStats(){
+
+}
+function resetStats() {
     var userId = firebase.auth().currentUser.uid;
 
     database.ref('/stats/' + userId).set({
-        wins:0,
-        losses:0,
-        best:0
+        wins: 0,
+        losses: 0,
+        best: 0
     })
-  }
+}
 
 
     

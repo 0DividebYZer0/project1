@@ -6,16 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
     <script>
-    // Initialize Firebase
-    var config = {
-        apiKey: "AIzaSyCxTPAKnAatzQ-DfkLSP1s6XlW6zuRFMeo",
-        authDomain: "project1-16a41.firebaseapp.com",
-        databaseURL: "https://project1-16a41.firebaseio.com",
-        projectId: "project1-16a41",
-        storageBucket: "project1-16a41.appspot.com",
-        messagingSenderId: "825653443847"
-    };
-    firebase.initializeApp(config);
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCxTPAKnAatzQ-DfkLSP1s6XlW6zuRFMeo",
+            authDomain: "project1-16a41.firebaseapp.com",
+            databaseURL: "https://project1-16a41.firebaseio.com",
+            projectId: "project1-16a41",
+            storageBucket: "project1-16a41.appspot.com",
+            messagingSenderId: "825653443847"
+        };
+        firebase.initializeApp(config);
     </script>
     <title>Treasure Hunt</title>
     <link rel="stylesheet" type="text/css" media="screen" href="./assets/css/style.css" />
@@ -60,14 +60,38 @@
     </div> -->
 
     <div class="container">
+        <ul id="dropdown1" class="dropdown-content">
+            <li><a href="#!" id="restartGame">Restart Game</a></li>
+            <li class="divider"></li>
+            <li><a href="#!" id="resetStats">Reset Stats</a></li>
+            <li class="divider"></li>
+            <li><a id="signOut" href="#!">Sign Out</a></li>
+        </ul>
         <nav>
             <div id="nav" class="nav-wrapper light-blue darken-2">
                 <a href="#" class="brand-logo center white-text">Treasure Hunt</a>
-                <a href="#" class="btn btn-info btn-lg" id="signOut">
-                    <span class="glyphicon glyphicon-log-out" ></span> Log out
-                  </a>
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                <!-- <a id="userDisplayName" class="flow-text" href="#"></a> -->
+
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a class="dropdown-trigger" href="#!" data-target="dropdown1"><strong><span id="userDisplayName"></span></strong><i class="material-icons right">arrow_drop_down</i></a></li>
+                </ul>
+
             </div>
         </nav>
+        <ul class="sidenav" id="mobile-demo">
+            <li><a  id="restartGame" href="#!">Restart Game</a></li>
+            <li class="divider"></li>
+            <li><a id="resetStats" href="#!">Reset Stats</a></li>
+            <li class="divider"></li>
+            <li><a id="signOut" href="#!">Sign Out</a></li>
+        </ul>
+        <!-- <div class="row">
+            <div class="col s12 m12 l12">
+                <span id="userDisplayName" class="flow-text"></span>
+                 <strong><span id="userDisplayName"></span></strong>
+            </div>
+        </div> -->
         <div class="row">
             <div class="col s7 m6 l6">
                 <h4 class="flow-text">Time Remaining: <span id="timerNum"></span></h4>
@@ -75,15 +99,19 @@
             <div class="col s5 m6 l6">
                 <h4 class="center-align flow-text"><span id="distance"></span></h4>
             </div>
+            <div class="col s12 m12 l12 center-align">
+                <span><strong>Round <span id="roundNumber"></span>/5</strong></span>
+
+            </div>
         </div>
         <div class="row">
             <div class="col s12 m4 l4">
-                <span><strong>Round <span id="roundNumber"></span>/5</strong></span> <!-- ASSOCIATED TO FLOW-->
-                <ul class="collection with-header z-depth-2">
+                <!-- ASSOCIATED TO FLOW-->
+                <ul class="collection with-header z-depth-2 collectionRemoveMargin">
                     <li class="collection-header">
                         <h6><strong>Clues</strong></h6>
                     </li>
-                    <li class="collection-item" id ='gif'>Clue 1: it is somewhere on the map</li>
+                    <li class="collection-item" id='gif'>Clue 1: it is somewhere on the map</li>
                     <li id="clue-0" class="collection-item">Clue 1: it is somewhere on the map</li>
                     <li id="clue-1" class="collection-item">Clue 2: it is somewhere on the map</li>
                     <li id="clue-2" class="collection-item">Clue 3: it is somewhere on the map</li>
@@ -100,20 +128,18 @@
                     <div class="col s12 m12 l12">
                         <div class="card light-blue lighten-4">
                             <div class="card-content grey-text text-darken-2">
-                                <span class="card-title">Game Stats</span>
+                                <span class="card-title center-align">Game Stats</span>
                                 <table class="centered responsive-table">
                                     <thead>
                                         <tr>
                                             <th>Wins</th>
                                             <th>Losses</th>
-                                            <th>Best Time (seconds)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <td id="win"></td>
                                             <td id="losses"></td>
-                                            <td id="best"></td>
                                         </tr>
                                     </tbody>
                                 </table>

@@ -23,4 +23,26 @@
     width: 220px;
     text-align: center;
 }
-    
+.vertical-align{
+    vertical-align: baseline;
+}
+.signIn-body{
+    height: 100%;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-image: linear-gradient(to top, #accbee 0%, #e7f0fd 100%); 
+}   
+.card-bg{
+    background-image: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
+}
+html, body, .my-wrapper {
+    height: 100%;
+  }
+  ul.dropdown-content li a {
+    color: #000; /* no need for !important :) */
+}
+.collectionRemoveMargin{
+    margin-top: 0% !important;
+}
+
