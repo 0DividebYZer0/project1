@@ -1,6 +1,7 @@
 var roundNumber = 0;
 var remainingLocations = [];
 var currentLocation = [];
+var numberOfLocations=0
 
 var database = firebase.database();
 
@@ -16,6 +17,8 @@ function resetGame(){
 
     locations.on("child_added", function (snap) {
         remainingLocations.push(snap.val());
+        numberOfLocations=remainingLocations.length
+
     });
 }
 
@@ -103,11 +106,9 @@ $(document).ready(function () {
     $('#modal1').modal('open');
     $("#timerNum").text(moment(timer.startNumber).format('m:ss'));
 
-    $("#roundNumber").text(roundNumber);
+    $("#roundNumber").text(roundNumber+"/"+numberOfLocations);
     $("#timerNum").addClass("light-green-text text-accent-4");
 });
-
-
 
 var timer = {
     startNumber: 120000,
@@ -155,7 +156,6 @@ var timer = {
     }
 };
 
-
 function startRound() {
 
     $("#distance").text("");
@@ -176,7 +176,7 @@ function startRound() {
 
         //roundNumber
         roundNumber++;
-        $("#roundNumber").text(roundNumber);
+        $("#roundNumber").text(roundNumber+"/"+numberOfLocations);
 
         $("#timerNum").removeClass("flashit red-text orange-text").addClass("light-green-text text-accent-4");
 
@@ -190,9 +190,6 @@ function startRound() {
         acceptClick = true;
     }
 };
-
-
-
 
 
 // // might not use modals for transitions between rounds
@@ -216,37 +213,34 @@ function startRound() {
 //     $('#modal1').modal('open');
 // };
 
+function signOut() {
+    event.preventDefault();  
+    firebase.auth().signOut().then(function () {
+        window.location.replace("index.html");
+        // Sign-out successful.
+        //console.log("sign out");
+    }).catch(function (error) {
+        console.log(error.code);
+    });
+};
 
+function resetStats() {
+    var userId = firebase.auth().currentUser.uid;
 
-$(document).on("click", "#signOut", signOut);
-$(document).on("click", "#resetStats", resetStats);
-$(document).on("click", "#restartGame", restartGame);
+    database.ref('/stats/' + userId).set({
+        wins: 0,
+        losses: 0,
+        best: 0
+    })
+}
 
 function restartGame(){
     remainingLocations = [];
     resetGame();
     timer.stop();
-    timer.startNumber = 120000;
-    roundNumber=1;
-    $("#roundNumber").text(roundNumber);
-    timer.run();
-
-
+    roundNumber=0;
+    startRound();
 }
-
-
-function signOut() {
-    event.preventDefault();
-    console.log("sign out pressed");
-  
-    firebase.auth().signOut().then(function () {
-        window.location.replace("index.html");
-        // Sign-out successful.
-        console.log("sign out");
-    }).catch(function (error) {
-        console.log(error.code);
-    });
-};
 
 function losses(){
     // Location is revealed 
@@ -270,15 +264,12 @@ function losses(){
     });
 
 }
-function resetStats() {
-    var userId = firebase.auth().currentUser.uid;
 
-    database.ref('/stats/' + userId).set({
-        wins: 0,
-        losses: 0,
-        best: 0
-    })
-}
+$(document).on("click", "#signOut", signOut);
+$(document).on("click", "#resetStats", resetStats);
+$(document).on("click", "#restartGame", restartGame);
+
+
 
 
     
