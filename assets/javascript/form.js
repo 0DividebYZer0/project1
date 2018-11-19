@@ -20,5 +20,10 @@ function submitForm(event){
 
     locationsRef.push(location)
 
+   // $("#formAdd").reset()
+    document.getElementById("formAdd").reset();
+
+    
+
 
 }
