@@ -11,7 +11,6 @@
   <link href="https://fonts.googleapis.com/css?family=Abril+Fatface" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
   <script>
-    // Initialize Firebase
     var config = {
       apiKey: "AIzaSyCxTPAKnAatzQ-DfkLSP1s6XlW6zuRFMeo",
       authDomain: "project1-16a41.firebaseapp.com",
@@ -20,8 +19,6 @@
       storageBucket: "project1-16a41.appspot.com",
       messagingSenderId: "825653443847"
     };
-
-
     firebase.initializeApp(config);
   </script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -36,27 +33,20 @@
 
 
   <script type="text/javascript">
-    // FirebaseUI config.
     var uiConfig = {
       signInSuccessUrl: 'main.html',
       signInOptions: [
-        // Leave the lines as is for the providers you want to offer your users.
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        //firebase.auth.GithubAuthProvider.PROVIDER_ID,
       ],
     };
-    // Initialize the FirebaseUI Widget using Firebase.
+
     var ui = new firebaseui.auth.AuthUI(firebase.auth());
-    // The start method will wait until the DOM is loaded.
     ui.start('#firebaseui-auth-container', uiConfig);    
   </script>
 
 </head>
 
 <body class="signIn-body">
-  <!-- <header id="headerSingIn">
-    <h2>Welcome to Treasure Hunt</h2>
-  </header> -->
   <div class="container my-wrapper valign-wrapper">
     <div class="row">
       <div class="col">

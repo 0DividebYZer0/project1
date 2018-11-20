@@ -6,7 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
     <script>
-        // Initialize Firebase
         var config = {
             apiKey: "AIzaSyCxTPAKnAatzQ-DfkLSP1s6XlW6zuRFMeo",
             authDomain: "project1-16a41.firebaseapp.com",
@@ -50,15 +49,6 @@
         </div>
     </div>
 
-    <!-- <div id="modal2" class="modal">
-        <div class="modal-content">
-            Hello
-        </div>
-        <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Next Round</a>
-        </div>
-    </div> -->
-
     <div class="container">
         <ul id="dropdown1" class="dropdown-content">
             <li><a href="#!" id="restartGame">Restart Game</a></li>
@@ -71,27 +61,21 @@
             <div id="nav" class="nav-wrapper light-blue darken-2">
                 <a href="#" class="brand-logo center white-text navTextSize">Treasure Hunt</a>
                 <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-                <!-- <a id="userDisplayName" class="flow-text" href="#"></a> -->
-
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
-                    <li><a class="dropdown-trigger" href="#!" data-target="dropdown1"><strong><span id="userDisplayName"></span></strong><i class="material-icons right">arrow_drop_down</i></a></li>
+                    <li><a class="dropdown-trigger" href="#!" data-target="dropdown1"><strong><span id="userDisplayName"></span></strong><i
+                                class="material-icons right">arrow_drop_down</i></a></li>
                 </ul>
 
             </div>
         </nav>
         <ul class="sidenav" id="mobile-demo">
-            <li><a  id="restartGame" href="#!">Restart Game</a></li>
+            <li><a id="restartGame" href="#!">Restart Game</a></li>
             <li class="divider"></li>
             <li><a id="resetStats" href="#!">Reset Stats</a></li>
             <li class="divider"></li>
             <li><a id="signOut" href="#!">Sign Out</a></li>
         </ul>
-        <!-- <div class="row">
-            <div class="col s12 m12 l12">
-                <span id="userDisplayName" class="flow-text"></span>
-                 <strong><span id="userDisplayName"></span></strong>
-            </div>
-        </div> -->
+
         <div class="row">
             <div class="col s7 m6 l6">
                 <h4 class="flow-text">Time Remaining: <span id="timerNum"></span></h4>
@@ -106,7 +90,6 @@
         </div>
         <div class="row">
             <div class="col s12 m4 l4">
-                <!-- ASSOCIATED TO FLOW-->
                 <ul class="collection with-header z-depth-2 collectionRemoveMargin">
                     <li class="collection-header">
                         <h6><strong>Clues</strong></h6>
@@ -153,8 +136,6 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <!--added geometry library to link-ML-->
-    <!--took this out of URL: &callback=initMap-->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAGBxD7ehhnDQY_7b7l30Spt5l4F8EQf4&libraries=places&libraries=geometry"
         async defer></script>
 
