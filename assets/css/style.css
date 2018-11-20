@@ -40,3 +40,6 @@ html, body, .my-wrapper {
 .collectionRemoveMargin{
     margin-top: 0% !important;
 }
+.navTextSize{
+    font-size: 2rem !important;
+}
