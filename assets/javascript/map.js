@@ -83,6 +83,11 @@ function initMap(locationInput) {
       
 }
 function appendClue(clueArray){
+  $(".collection-item").remove();
+  var gif = $("<li>");
+  gif.addClass("collection-item");
+  gif.attr("id", 'gif');
+  $(".collection").append(gif);
   for (var i = 0; i < clueArray.length; i++) {
     var listItem = $("<li>");
     listItem.addClass("collection-item");
