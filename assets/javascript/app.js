@@ -11,10 +11,12 @@ var displayName = "";
 var uid = "";
 var userLoggedIn = false
 
+// acceptClick: this Boolean variable helps control when clicks on the map are recognized as part of the game. 
+    // Once the user has guessed the location or run out of time (and before the start of the next round), clicking shouldn't elicit the same response from the game as it does when the game is active.
 var acceptClick = false;
 
 function resetGame(){
-
+    // populate remainingLocations array with each element from Firebase /locations 
     locations.on("child_added", function (snap) {
         remainingLocations.push(snap.val());
         numberOfLocations=remainingLocations.length
@@ -30,12 +32,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
         // User is signed in.
         displayName = user.displayName;
-        //   var email = user.email;
-        //   var emailVerified = user.emailVerified;
-        //   var photoURL = user.photoURL;
-        //   var isAnonymous = user.isAnonymous;
         uid = user.uid;
-        //   var providerData = user.providerData;
 
         $("#userDisplayName").text("Welcome: " + displayName.split(" ", 1));
         gameStats = database.ref("/stats/" + uid);
@@ -91,18 +88,13 @@ $(document).ready(function () {
             coverTrigger: false,
             alignment:'right'
         });
-    // on load and on child_added, store contents of locations(Firebase) in an array variable
-    // this represents the set of locations remaining
-
-
-    //might get rid of gameStats; individual user's wins/losses don't need to be stored in Firebase.
+    
+    //this modal comes up on page load (after user signs in); closing it starts the first round
     $('#modal1').modal({
         dismissible: false,
         onCloseEnd: function () { setTimeout(startRound, 500) }
     });
-    // $('#modal2').modal({
-    //     dismissible: false,
-    // });
+
     $('#modal1').modal('open');
     $("#timerNum").text(moment(timer.startNumber).format('m:ss'));
 
@@ -111,10 +103,10 @@ $(document).ready(function () {
 });
 
 var timer = {
+    // expressing time in milliseconds makes it easier to work with moment.js formatting
     startNumber: 120000,
     intervalId: '',
     run: function () {
-
 
         clearInterval(this.intervalId);
         this.intervalId = setInterval(this.decrement, 1000);
@@ -123,6 +115,8 @@ var timer = {
         timer.startNumber -= 1000;
         var formattedTime = moment(timer.startNumber).format('m:ss');
         $("#timerNum").text(formattedTime);
+
+        // conditional class assignment to style #timerNum according to how much time is left
         if (timer.startNumber < 60000) {
             $("#timerNum").removeClass("light-green-text text-accent-4").addClass("orange-text");
         }
@@ -136,19 +130,13 @@ var timer = {
         if (timer.startNumber === 0) {
             //loss scenario
             timer.stop();
+            // time's up, so don't accept any more guesses (user can still click the map, but it won't count)
             acceptClick = false;
-            //display some message to indicate that time's up, and show answer
-            // $("#distance").html("Time's up!<br>The Treasure remains hidden!");
-           
-
+                                   
             losses();
-            //start next round
+            //start next round, after a short period
             setTimeout(startRound, 5000);
 
-            // if (roundNumber < 5) {
-            //     //do something here after timer hits zero
-            //     modalNextRound();
-            // }
         }
     },
     stop: function () {
@@ -160,21 +148,23 @@ function startRound() {
 
     $("#distance").text("");
 
-    // console.log("startRound begins");
+    // check for remaining locations from remainingLocations
+        // if there are none, then game is over
+        // if there are locations remaining, then randomly choose the next one and pass it to initMap
     if (remainingLocations.length === 0) {
         //end of game scenario
-        // console.log("no more locations");
+        
         $("#distance").text("Thanks for playing!");
     }
     else {
         var randLIndex = Math.floor(Math.random() * remainingLocations.length);
 
-        // currentLocation will be passed to whatever function sets up the map: initMap
-         currentLocation = remainingLocations[randLIndex];
-
+        // currentLocation will be passed to the function that sets up the map: initMap
+        currentLocation = remainingLocations[randLIndex];
+        // remove the selected element from remainingLocations (so that it doesn't come up again in the same game)
         remainingLocations.splice(randLIndex, 1);
 
-        //roundNumber
+        // increment roundNumber
         roundNumber++;
         $("#roundNumber").text(roundNumber+"/"+numberOfLocations);
 
@@ -184,47 +174,25 @@ function startRound() {
         $("#timerNum").text(moment(timer.startNumber).format('m:ss'))
         timer.run();
 
-        // console.log("initMap called by startRound")
-
         initMap(currentLocation);
         acceptClick = true;
     }
 };
 
 
-// // might not use modals for transitions between rounds
-// function modalNextRound() {
-//     // timer/round handling
-//     $("#timerNum").removeClass("flashit").addClass("light-green-text text-accent-4");
-//     roundNumber++;
-//     $("#roundNumber").text(roundNumber);
-//     timer.startNumber = 5000;
-//     $("#timerNum").text(moment(timer.startNumber).format('m:ss'));
-
-//     // modal construction
-//     var roundCompleted = $('<p>');
-//     var instructions = $('<p>');
-//     roundCompleted.text('Round Completed');
-//     instructions.text('Click Next Round when you are ready to begin the next round.');
-//     $('.modal-content').empty();
-//     $('.modal-content').append(roundCompleted);
-//     $('.modal-content').append(instructions);
-//     $('#modal-btn').text('Next Round');
-//     $('#modal1').modal('open');
-// };
-
 function signOut() {
     event.preventDefault();  
     firebase.auth().signOut().then(function () {
         window.location.replace("index.html");
         // Sign-out successful.
-        //console.log("sign out");
+        
     }).catch(function (error) {
         console.log(error.code);
     });
 };
 
 function resetStats() {
+    // retrieve user ID to interact with the corresponding directory in Firebase
     var userId = firebase.auth().currentUser.uid;
 
     database.ref('/stats/' + userId).set({
@@ -245,8 +213,8 @@ function restartGame(){
 function losses(){
     // Location is revealed 
     markerWindow();
-    $("#distance").html("Time is Up!" + '<br>' + currentLocation.site);
-    //first i get the id
+    $("#distance").html("Time is Up!" + "<br>" + currentLocation.site);
+    // retrieve user ID to interact with the corresponding directory in Firebase
     var userId = firebase.auth().currentUser.uid;
     var losses = 0;
 
