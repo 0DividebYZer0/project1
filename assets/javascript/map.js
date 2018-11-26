@@ -91,7 +91,6 @@ function appendClue(clueArray){
   for (var i = 0; i < clueArray.length; i++) {
     var listItem = $("<li>");
     listItem.addClass("collection-item");
-    $("#clue-"+i).remove();
     listItem.attr("id", "clue-"+i);
     listItem.text(clueArray[i]);
     $(".collection").append(listItem);  
