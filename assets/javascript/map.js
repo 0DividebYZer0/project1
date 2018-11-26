@@ -29,19 +29,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 var origin = {};
 
-function initMap(locationInput) {
-  // locations.on("child_added", function(loc){
-  //   locationObject.push(loc.val());
-
-    //don't use a for loop, but apply the origin property assignments to locationInput properties
-      // for(var i = 0; i<locationObject.length; i++){
-      //     origin.lat = Number(locationObject[i].lat);
-      //     origin.lng = Number(locationObject[i].lng);
-      //     origin.id = locationObject[i].id; 
-      //     origin.site = locationObject[i].site;
-      //     origin.clues = locationObject[i].clues;
-      // }
-    
+function initMap(locationInput) {  
     //origin property assignments to locationInput properties
     origin.lat = Number(locationInput.lat);
     origin.lng = Number(locationInput.lng);
@@ -73,14 +61,10 @@ function initMap(locationInput) {
 
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 14,
-      // need to add some random offset from origin for center; otherwise, the map view is centered at the origin
-      // adding random offset implies adding another set of lat anf lng varibles... 
       center: origin,
     });
     var clickHandler = new ClickEventHandler(map, origin);
-    var id = clickHandler.origin.id;
-
-      
+    var id = clickHandler.origin.id;      
 }
 function appendClue(clueArray){
   $(".collection-item").remove();
@@ -110,14 +94,11 @@ function markerWindow(){
         title: origin.site,
         animation: google.maps.Animation.DROP 
       });
-    
       var infowindow = new google.maps.InfoWindow({
       content: '<div align ="center"> The Treasure was Hidden in the' + '<br>' + this.origin.site  +'</div>' 
-      
        });
       infowindow.open(map, marker);
 }
-
 
 /**
  * @constructor
@@ -130,7 +111,7 @@ var ClickEventHandler = function(map, origin) {
   this.infowindow = new google.maps.InfoWindow;
   // Listen for clicks on the map.
   this.map.addListener('click', this.handleClick.bind(this));
-};//end of ClickEventHandler
+};
 
 //on click map function
 ClickEventHandler.prototype.handleClick = function(event){
@@ -147,9 +128,6 @@ ClickEventHandler.prototype.handleClick = function(event){
     
         //win is update after user finds location
         updateWins() 
-        //win is updated in html
-        //$('#win').html(win);
-
         setTimeout(startRound, 5000);
       } else{
           //user picked the worng location and is given a distance clue
@@ -162,10 +140,6 @@ ClickEventHandler.prototype.handleClick = function(event){
     }
   };
 };
-
-
-
-//console.log(firebase.auth().currentUser.uid)
 
 function updateWins(){
   // Location is revealed 
@@ -189,20 +163,4 @@ function updateWins(){
   });
 
 }
-
-// function displayAnswer() {
-    
-
-//   //drop marker
-//   var marker = new google.maps.Marker({
-//     position: target,
-//     map: ClickEventHandler.map,
-//     title: ClickEventHandler.site,
-//     animation: google.maps.Animation.DROP
-//   });
-
-
-
-//   setTimeout(startRound, 5000)
-// };
 
