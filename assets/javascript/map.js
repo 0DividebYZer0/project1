@@ -50,10 +50,12 @@ function initMap(locationInput) {
     origin.clues = locationInput.clues;
     origin.pictureClue = locationInput.pictureClue;
 
+    appendClue(origin.clues);
     //display clues on page
-    for (var i = 0; i < origin.clues.length; i++) {
-      $("#clue-" + i).text(origin.clues[i]);
-    };
+     //for (var i = 0; i < origin.clues.length; i++) {
+       //$("#clue-" + i).text(origin.clues[i]);
+       //appendClue(origin.clues[i]);
+     //};
 
      // image clue
     var gif =  origin.pictureClue;
@@ -79,6 +81,20 @@ function initMap(locationInput) {
     var id = clickHandler.origin.id;
 
       
+}
+function appendClue(clueArray){
+  $(".collection-item").remove();
+  var gif = $("<li>");
+  gif.addClass("collection-item");
+  gif.attr("id", 'gif');
+  $("#clueCollection").append(gif);
+  for (var i = 0; i < clueArray.length; i++) {
+    var listItem = $("<li>");
+    listItem.addClass("collection-item");
+    listItem.attr("id", "clue-"+i);
+    listItem.text(clueArray[i]);
+    $("#clueCollection").append(listItem);  
+  };
 }
 
 // marker and infowindow function
